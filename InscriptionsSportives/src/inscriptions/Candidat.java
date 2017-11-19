@@ -28,7 +28,6 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	 * Retourne le nom du candidat.
 	 * @return
 	 */
-	
 	public String getNom()
 	{
 		return nom;
