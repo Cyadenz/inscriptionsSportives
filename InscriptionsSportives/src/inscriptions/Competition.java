@@ -60,10 +60,13 @@ public class Competition implements Comparable<Competition>, Serializable
 	{	
 		// TODO retourner vrai si et seulement si la date système est antérieure Ã  la date de cloture.
 		LocalDate DateSys = LocalDate.now();
-		if(DateSys.isAfter(getDateCloture()))
-			return false;
-		else 
-			return true;
+		try {
+			if (DateSys.isAfter(getDateCloture()))
+				return false;
+		} catch (Exception e) {
+			System.out.println("La date n'est pas donnée");
+		}
+		return true;
 	}
 	
 	/**

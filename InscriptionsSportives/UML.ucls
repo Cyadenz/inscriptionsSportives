@@ -3,7 +3,7 @@
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="inscriptions.Inscriptions" project="InscriptionsSportives" 
     file="/InscriptionsSportives/src/inscriptions/Inscriptions.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="412" width="357" x="1204" y="939"/>    
+    <position height="-1" width="-1" x="950" y="995"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="inscriptions.Personne" project="InscriptionsSportives" 
     file="/InscriptionsSportives/src/inscriptions/Personne.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="304" width="269" x="695" y="939"/>    
+    <position height="-1" width="-1" x="921" y="252"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="inscriptions.Competition" project="InscriptionsSportives" 
     file="/InscriptionsSportives/src/inscriptions/Competition.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="394" width="318" x="865" y="505"/>    
+    <position height="-1" width="-1" x="234" y="1015"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,7 +30,7 @@
   </class>  
   <class id="4" language="java" name="inscriptions.Equipe" project="InscriptionsSportives" 
     file="/InscriptionsSportives/src/inscriptions/Equipe.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="196" width="239" x="565" y="505"/>    
+    <position height="-1" width="-1" x="279" y="245"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -39,7 +39,7 @@
   </class>  
   <class id="5" language="java" name="inscriptions.Candidat" project="InscriptionsSportives" 
     file="/InscriptionsSportives/src/inscriptions/Candidat.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="267" width="237" x="865" y="198"/>    
+    <position height="-1" width="-1" x="593" y="600"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
