@@ -96,7 +96,7 @@ public class Competition implements Comparable<Competition>, Serializable
 	{
 		// TODO vÃ©rifier que l'on avance pas la date.
 		if (dateCloture.isAfter(this.dateCloture))
-			System.out.println("Vous ne pouvez pas avancer la date");
+			System.out.println("Vous ne pouvez pas avancer la date !");
 		else
 			this.dateCloture = dateCloture;
 	}
