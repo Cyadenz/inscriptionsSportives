@@ -7,8 +7,6 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
-import com.sun.xml.internal.ws.policy.spi.AssertionCreationException;
-
 import inscriptions.Competition;
 import inscriptions.Equipe;
 import inscriptions.Inscriptions;
