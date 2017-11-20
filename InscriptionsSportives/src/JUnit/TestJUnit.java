@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+import com.sun.xml.internal.ws.policy.spi.AssertionCreationException;
+
 import inscriptions.Competition;
 import inscriptions.Equipe;
 import inscriptions.Inscriptions;
@@ -40,7 +42,6 @@ public class TestJUnit{
 //		Equipe Test = inscriptions.createEquipe("Test");
 //		System.out.println(Test.toString());
 //		assertEquals(Test.toString(), contenue);	
-		
 	}
 
 	@Test
@@ -107,12 +108,8 @@ public class TestJUnit{
 		abc.add(test);
 		abc.add(slt);
 		
-		//assertEquals(abc, inscriptions.getEquipes());
-		
-		if(!abc.contains(test))
-			fail("Abc contient test : "+abc.contains(slt));
-		if(!abc.contains(slt))
-			fail("Abc contient slt : "+abc.contains(slt));
+		assertTrue ("Abc contient test : "+abc.contains(test), abc.contains(test));
+		assertTrue ("Abc contient slt : "+abc.contains(slt), abc.contains(slt));
 	}
 
 	@Test
@@ -126,9 +123,7 @@ public class TestJUnit{
 		
 		abc.remove(slt);
 		inscriptions.remove(slt);
-		if(abc.contains(slt))
-			fail("Abc contient slt : "+abc.contains(slt));
-//		assertEquals(abc, inscriptions.getEquipes());
+		assertFalse("Abc contient slt : "+abc.contains(slt), abc.contains(slt));
 	}
 
 }
