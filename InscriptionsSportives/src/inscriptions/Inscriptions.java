@@ -134,7 +134,7 @@ public class Inscriptions implements Serializable
 		competitions.remove(competition);
 	}
 	
-	void remove(Candidat candidat)
+	public void remove(Candidat candidat)
 	{
 		candidats.remove(candidat);
 	}
