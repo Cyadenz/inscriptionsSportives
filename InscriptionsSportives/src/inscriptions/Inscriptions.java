@@ -12,6 +12,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import commandLineMenus.Action;
+import commandLineMenus.Menu;
+import commandLineMenus.Option;
+import commandLineMenus.rendering.examples.util.InOut;
+
 /**
  * Point d'entrée dans l'application, un seul objet de type Inscription
  * permet de gérer les compétitions, candidats (de type equipe ou personne)
@@ -247,16 +252,18 @@ public class Inscriptions implements Serializable
         final LocalDate localDate = LocalDate.parse(input, DATE_FORMAT);
         
 		Inscriptions inscriptions = Inscriptions.getInscriptions();
-		Competition flechettes = inscriptions.createCompetition("Mondial de fléchettes", localDate, false);
-		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "azerty"), 
-				boris = inscriptions.createPersonne("Boris", "le Hachoir", "ytreza");
-		flechettes.add(tony);
-		Equipe lesManouches = inscriptions.createEquipe("Les Manouches");
-		lesManouches.add(boris);
-		lesManouches.add(tony);
-		System.out.println(inscriptions);
-		lesManouches.delete();
-		System.out.println(inscriptions);
+//		Competition flechettes = inscriptions.createCompetition("Mondial de fléchettes", localDate, false);
+//		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "azerty"), 
+//				boris = inscriptions.createPersonne("Boris", "le Hachoir", "ytreza");
+//		flechettes.add(tony);
+//		Equipe lesManouches = inscriptions.createEquipe("Les Manouches");
+//		lesManouches.add(boris);
+//		lesManouches.add(tony);
+//		System.out.println(inscriptions);
+//		lesManouches.delete();
+//		System.out.println(inscriptions);
+
+		
 		try
 		{
 			inscriptions.sauvegarder();
