@@ -2,6 +2,7 @@ package dialogueUtilisateur;
 
 import static commandLineMenus.rendering.examples.util.InOut.getString;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,15 +36,16 @@ private ManageEmployees gestionPersonnel;
 		Menu menu = new Menu("Gestion du personnel");
 		menu.add(editerEmploye(gestionPersonnel.getRoot()));
 		menu.add(Compet(inscriptions));
+		menu.add(Equipe(inscriptions));
 		menu.add(Personne(inscriptions));
-		menu.add(menuQuitter());
+		menu.add(menuQuitter(inscriptions));
 		return menu;
 	}
 
-	private Menu menuQuitter()
+	private Menu menuQuitter(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Quitter", "q");
-		menu.add(quitterEtEnregistrer());
+		menu.add(quitterEtEnregistrer(inscriptions));
 		menu.add(quitterSansEnregistrer());
 		menu.addBack("r");
 		return menu;
@@ -63,35 +65,28 @@ private ManageEmployees gestionPersonnel;
 	{
 		Menu menu = new Menu("Gérer les personnes", "a");
 		menu.add(afficherPersonnes(inscriptions));
-//		menu.add(ajouterPersonne());
-//		menu.add(supprimerPersonne());
+		menu.add(ajouterPersonne(inscriptions));
+		menu.add(selectionnerPersonne(inscriptions));
 		menu.addBack("q");
 		return menu;
 	}
-//	
-//	private Menu Equipe()
-//	{
-//		Menu menu = new Menu("Gérer les équipes", "e");
-////		menu.add(afficher());
-////		menu.add(ajoutercompetition());
-////		menu.add(selectionnercompetition());
-//		menu.addBack("q");
-//		return menu;
-//	}
-//	
-//	private Menu Personne()
-//	{
-//		Menu menu = new Menu("Gérer les personnes", "p");
-////		menu.add(afficher());
-////		menu.add(ajoutercompetition());
-////		menu.add(selectionnercompetition());
-//		menu.addBack("q");
-//		return menu;
-//	}
 	
+	private Menu Equipe(Inscriptions inscriptions)
+	{
+		Menu menu = new Menu("Gérer les équipes", "e");
+		menu.add(afficherEquipe(inscriptions));
+		menu.add(ajouterEquipe(inscriptions));
+		menu.add(selectionnerEquipe(inscriptions));
+		menu.addBack("q");
+		return menu;
+	}
 	private Option afficher(Inscriptions inscriptions)
 	{
 		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
+	}
+	private Option afficherEquipe(Inscriptions inscriptions)
+	{
+		return new Option("Afficher les équipes", "l", () -> {System.out.println(inscriptions.getEquipes());});
 	}
 	private Option afficherCandidats(final Competition competition)
 	{
@@ -116,6 +111,15 @@ private ManageEmployees gestionPersonnel;
 	{
 		return new Option("Afficher l'employé", "l", () -> {System.out.println(employe);});
 	}
+	
+	private Option afficherEquipe(final Equipe equipe)
+	{
+		return new Option("Afficher l'équipe", "l", () -> {System.out.println(equipe);});
+	}
+	private Option afficherPersonne(Personne personne)
+	{
+		return new Option("Afficher les informations", "l", () -> {System.out.println("Nom : "+personne.getNom()+" Prenom : "+personne.getPrenom()+" Mail : "+personne.getMail());});
+	}
 	private LocalDate recupDateLocalFormat(String input)
 	{
 		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -130,18 +134,23 @@ private ManageEmployees gestionPersonnel;
 		} );
 //AJOUT DE 2 OPTIONS POUR L4EQUIPE		
 	}
-	
-//	private Option ajouterCandidat(final Competition competition)
-//	{
-//		return new Option("Ajouter un candidat à une compétition", "a",
-//				() -> 
-//				{
-//					competition.addEmploye(getString("nom : "), 
-//						getString("prenom : "), getString("mail : "), 
-//						getString("password : "));
-//				}
-//		);
-//	}
+	private Option ajouterEquipe(Inscriptions inscriptions)
+	{
+		return new Option("Ajouter une équipe", "a", () -> 
+		{
+			inscriptions.createEquipe(getString("nom : "));
+		} );	
+	}
+	private Option ajouterPersonne(Inscriptions inscriptions)
+	{
+		return new Option("Ajouter une personne", "a",
+				() -> 
+				{
+					inscriptions.createPersonne(getString("nom : "), 
+						getString("prenom : "), getString("mail : "));
+				}	
+		);
+	}
 	
 	private Menu editercompetition(Competition competition)
 	{
@@ -150,12 +159,30 @@ private ManageEmployees gestionPersonnel;
 		menu.add(changerNom(competition));
 		menu.add(gererDatecloture(competition)); // NE FONCTIONNE PAS
 		menu.add(gererCandidats(competition));
-//		menu.add(gererestEnEquipe(competition));
 		menu.add(supprimer(competition));
 		menu.addBack("q");
 		return menu;
 	}
-
+	private Menu editerEquipes(Equipe equipe)
+	{
+		Menu menu = new Menu("Editer " + equipe.getNom());
+		menu.add(afficherEquipe(equipe));
+		menu.add(changerNomEquipe(equipe));
+		menu.add(supprimerEquipe(equipe));
+		menu.addBack("q");
+		return menu;
+	}
+	private Menu editerPersonnes(Personne personne)
+	{
+		Menu menu = new Menu("Editer " + personne.getNom()+" "+personne.getPrenom());
+		menu.add(afficherPersonne(personne));
+		menu.add(changerNomPersonne(personne));
+		menu.add(changerPrenomPersonne(personne));
+		menu.add(changerMailPersonne(personne));
+		menu.add(supprimerPersonne(personne));
+		menu.addBack("q");
+		return menu;
+	}
 	private Menu editerEmploye(Employee employe)
 	{
 		Menu menu = new Menu("Gérer le compte " + employe.getLastName(), "c");
@@ -189,38 +216,35 @@ private ManageEmployees gestionPersonnel;
 			        
 					competition.setDateCloture(dateChanger);
 					});
-	}
-
-//	private List<Employee> modifierEmploye(final Department competition)
-//	{
-//		return new List<>("Modifier un employé", "e", 
-//				() -> new ArrayList<>(competition.getEmployes()),
-//				(index, element) -> {editerEmploye(element);}
-//				);
-//	}
-//	
-//	private List<Employee> supprimerCandidatCompet(final Department competition)
-//	{
-//		return new List<>("Supprimer un employé", "s", 
-//				() -> new ArrayList<>(competition.getEmployes()),
-//				(index, element) -> {element.remove();}
-//				);
-//	}
-//	
-//	private List<Employee> changerAdministrateur(final Department competition)
-//	{
-//		return new List<Employee>("Changer d'administrateur", "c", 
-//				() -> new ArrayList<>(competition.getEmployes()), 
-//				(index, element) -> {competition.setAdministrator(element);}
-//				);
-//	}		
+	}		
 	
 	private Option changerNom(final Competition competition)
 	{
 		return new Option("Renommer le nom de la compétition", "r", 
 				() -> {competition.setNom(getString("Nouveau nom : "));});
 	}
+	
+	private Option changerNomEquipe(final Equipe equipe)
+	{
+		return new Option("Renommer le nom de l'équipe", "r", 
+				() -> {equipe.setNom(getString("Nouveau nom : "));});
+	}
 
+	private Option changerNomPersonne(final Personne personne)
+	{
+		return new Option("Renommer le nom de la personne", "rn", 
+				() -> {personne.setNom(getString("Nouveau nom : "));});
+	}
+	private Option changerPrenomPersonne(final Personne personne)
+	{
+		return new Option("Renommer le prenom de la personne", "rp", 
+				() -> {personne.setPrenom(getString("Nouveau prenom : "));});
+	}
+	private Option changerMailPersonne(final Personne personne)
+	{
+		return new Option("Renommer le mail de la personne", "rm", 
+				() -> {personne.setMail(getString("Nouveau mail : "));});
+	}
 	private List<Competition> selectionnercompetition(Inscriptions inscriptions)
 	{
 		return new List<Competition>("Sélectionner une competition", "e", 
@@ -228,12 +252,34 @@ private ManageEmployees gestionPersonnel;
 				(element) -> editercompetition(element)
 				);
 	}
+	private List<Equipe> selectionnerEquipe(Inscriptions inscriptions)
+	{
+		return new List<Equipe>("Sélectionner une équipe", "e", 
+				() -> new ArrayList<>(inscriptions.getEquipes()),
+				(element) -> editerEquipes(element)
+				);
+	}
 	
+	private List<Personne> selectionnerPersonne(Inscriptions inscriptions)
+	{
+		return new List<Personne>("Sélectionner une personne", "e", 
+				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				(element) -> editerPersonnes(element)
+				);
+	}
 	private Option supprimer(Competition competition)
 	{
 		return new Option("Supprimer", "d", () -> {competition.delete();});
 	}
 	
+	private Option supprimerEquipe(Equipe equipe)
+	{
+		return new Option("Supprimer", "d", () -> {equipe.delete();});
+	}
+	private Option supprimerPersonne(Personne personne)
+	{
+		return new Option("Supprimer", "d", () -> {personne.delete();});
+	}
 	private Option changerNom(final Employee employe)
 	{
 		return new Option("Changer le nom", "n", 
@@ -256,7 +302,7 @@ private ManageEmployees gestionPersonnel;
 		return new Option("Changer le password", "x", () -> {employe.setPassword(getString("Nouveau password : "));});
 	}
 	
-	private Option quitterEtEnregistrer()
+	private Option quitterEtEnregistrer(Inscriptions inscriptions)
 	{
 		return new Option("Quitter et enregistrer", "q", 
 				() -> 
@@ -264,9 +310,10 @@ private ManageEmployees gestionPersonnel;
 					try
 					{
 						gestionPersonnel.sauvegarder();
+						inscriptions.sauvegarder();
 						Action.QUIT.optionSelected();
 					} 
-					catch (ImpossibleToSaveException e)
+					catch (ImpossibleToSaveException | IOException e)
 					{
 						System.out.println("Impossible d'effectuer la sauvegarde");
 					}
