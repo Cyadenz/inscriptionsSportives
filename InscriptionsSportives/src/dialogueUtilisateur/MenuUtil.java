@@ -10,7 +10,6 @@ import commandLineMenus.Action;
 import commandLineMenus.List;
 import commandLineMenus.Menu;
 import commandLineMenus.Option;
-import commandLineMenus.examples.employees.core.Department;
 import commandLineMenus.examples.employees.core.Employee;
 import commandLineMenus.examples.employees.core.ImpossibleToSaveException;
 import commandLineMenus.examples.employees.core.ManageEmployees;
@@ -36,9 +35,7 @@ private ManageEmployees gestionPersonnel;
 		Menu menu = new Menu("Gestion du personnel");
 		menu.add(editerEmploye(gestionPersonnel.getRoot()));
 		menu.add(Compet(inscriptions));
-//		menu.add(Equipe());
-//		menu.add(Personne());
-//		menu.add(Candidat());
+		menu.add(Personne(inscriptions));
 		menu.add(menuQuitter());
 		return menu;
 	}
@@ -62,15 +59,15 @@ private ManageEmployees gestionPersonnel;
 		return menu;
 	}
 	
-//	private Menu Candidat()
-//	{
-//		Menu menu = new Menu("Gérer les candidats", "a");
-////		menu.add(afficher());
-////		menu.add(ajoutercompetition());
-////		menu.add(selectionnercompetition());
-//		menu.addBack("q");
-//		return menu;
-//	}
+	private Menu Personne(Inscriptions inscriptions)
+	{
+		Menu menu = new Menu("Gérer les personnes", "a");
+		menu.add(afficherPersonnes(inscriptions));
+//		menu.add(ajouterPersonne());
+//		menu.add(supprimerPersonne());
+		menu.addBack("q");
+		return menu;
+	}
 //	
 //	private Menu Equipe()
 //	{
@@ -96,11 +93,14 @@ private ManageEmployees gestionPersonnel;
 	{
 		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
 	}
-	
-//	private Option afficherEmployes(final Department competition)
-//	{
-//		return new Option("Afficher les employes", "l", () -> {System.out.println(competition.getEmployes());});
-//	}
+	private Option afficherCandidats(final Competition competition)
+	{
+		return new Option("Afficher les candidats", "l", () -> {System.out.println(competition.getCandidats());});
+	}
+	private Option afficherPersonnes(Inscriptions inscriptions)
+	{
+		return new Option("Afficher les personnes", "l", () -> {System.out.println(inscriptions.getPersonnes());});
+	}
 	private Option afficher(final Competition competition)
 	{
 		return new Option("Afficher la competition", "l", 
@@ -131,9 +131,9 @@ private ManageEmployees gestionPersonnel;
 //AJOUT DE 2 OPTIONS POUR L4EQUIPE		
 	}
 	
-//	private Option ajouterEmploye(final Department competition)
+//	private Option ajouterCandidat(final Competition competition)
 //	{
-//		return new Option("ajouter un employé", "a",
+//		return new Option("Ajouter un candidat à une compétition", "a",
 //				() -> 
 //				{
 //					competition.addEmploye(getString("nom : "), 
@@ -149,9 +149,9 @@ private ManageEmployees gestionPersonnel;
 		menu.add(afficher(competition));
 		menu.add(changerNom(competition));
 		menu.add(gererDatecloture(competition)); // NE FONCTIONNE PAS
-//		menu.add(gererEmployes(competition));
+		menu.add(gererCandidats(competition));
 //		menu.add(gererestEnEquipe(competition));
-//		menu.add(supprimer(competition));
+		menu.add(supprimer(competition));
 		menu.addBack("q");
 		return menu;
 	}
@@ -168,17 +168,17 @@ private ManageEmployees gestionPersonnel;
 		return menu;
 	}
 
-//	private Menu gererEmployes(Department competition)
-//	{
-//		Menu menu = new Menu("Gérer les employés de " + competition.getName(), "e");
-//		menu.add(afficherEmployes(competition));
+	private Menu gererCandidats(Competition competition)
+	{
+		Menu menu = new Menu("Gérer les candidats de " + competition.getNom(), "e");
+		menu.add(afficherCandidats(competition));
 //		menu.add(ajouterEmploye(competition));
 //		menu.add(modifierEmploye(competition));
-//		menu.add(supprimerEmploye(competition));
-//		menu.addBack("q");
-//		return menu;
-//	}
-//	
+//		menu.add(supprimerCandidatCompet(competition));
+		menu.addBack("q");
+		return menu;
+	}
+	
 	private Option gererDatecloture(final Competition competition)
 	{        
 		return new Option("Changer la date de cloture de la compétition", "c", 
@@ -199,7 +199,7 @@ private ManageEmployees gestionPersonnel;
 //				);
 //	}
 //	
-//	private List<Employee> supprimerEmploye(final Department competition)
+//	private List<Employee> supprimerCandidatCompet(final Department competition)
 //	{
 //		return new List<>("Supprimer un employé", "s", 
 //				() -> new ArrayList<>(competition.getEmployes()),
@@ -229,10 +229,10 @@ private ManageEmployees gestionPersonnel;
 				);
 	}
 	
-//	private Option supprimer(Department competition)
-//	{
-//		return new Option("Supprimer", "d", () -> {competition.remove();});
-//	}
+	private Option supprimer(Competition competition)
+	{
+		return new Option("Supprimer", "d", () -> {competition.delete();});
+	}
 	
 	private Option changerNom(final Employee employe)
 	{
