@@ -130,7 +130,7 @@ private ManageEmployees gestionPersonnel;
 	{
 		return new Option("Ajouter une competition", "a", () -> 
 		{
-			inscriptions.createCompetition((getString("nom : ")), recupDateLocalFormat("01-07-2020"), false);
+			inscriptions.createCompetition((getString("nom : ")), null, false);
 		} );
 //AJOUT DE 2 OPTIONS POUR L4EQUIPE		
 	}
@@ -151,7 +151,13 @@ private ManageEmployees gestionPersonnel;
 				}	
 		);
 	}
-	
+	private Option selectionnerPersonne(Equipe equipe, Inscriptions inscriptions)
+	{
+		return new List<Personne>("Sélectionner une personne", "e", 
+				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				(element) -> editerPersonnes(element)
+				);
+	}
 	private Menu editercompetition(Competition competition)
 	{
 		Menu menu = new Menu("Editer " + competition.getNom());
@@ -163,10 +169,11 @@ private ManageEmployees gestionPersonnel;
 		menu.addBack("q");
 		return menu;
 	}
-	private Menu editerEquipes(Equipe equipe)
+	private Menu editerEquipes(Equipe equipe, Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Editer " + equipe.getNom());
 		menu.add(afficherEquipe(equipe));
+		menu.add(selectionnerPersonne(equipe, inscriptions));
 		menu.add(changerNomEquipe(equipe));
 		menu.add(supprimerEquipe(equipe));
 		menu.addBack("q");
@@ -256,7 +263,7 @@ private ManageEmployees gestionPersonnel;
 	{
 		return new List<Equipe>("Sélectionner une équipe", "e", 
 				() -> new ArrayList<>(inscriptions.getEquipes()),
-				(element) -> editerEquipes(element)
+				(element) -> editerEquipes(element, inscriptions)
 				);
 	}
 	
