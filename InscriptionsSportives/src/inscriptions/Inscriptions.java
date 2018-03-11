@@ -246,23 +246,36 @@ public class Inscriptions implements Serializable
 	}
 	
 	public static void main(String[] args)
-	{
-		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        final String input = "01-07-2018";
-        final LocalDate localDate = LocalDate.parse(input, DATE_FORMAT);
-        
+	{       
+//		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//		final LocalDate localDate = LocalDate.parse("01-01-2020", DATE_FORMAT);
+		
 		Inscriptions inscriptions = Inscriptions.getInscriptions();
+		
 //		Competition flechettes = inscriptions.createCompetition("Mondial de fléchettes", localDate, false);
-//		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "azerty"), 
-//				boris = inscriptions.createPersonne("Boris", "le Hachoir", "ytreza");
+//		Competition basketBall = inscriptions.createCompetition("Mondial de Basket-Ball", localDate, true);
+//		Competition pingPong = inscriptions.createCompetition("Mondial de ping-pong", localDate, false);
+//		
+//		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "Tony.ddp@hotmail.fr"), 
+//		boris = inscriptions.createPersonne("Boris", "le Hachoir", "Boris.LH@hotmail.fr"),
+//		
+//		tony2 = inscriptions.createPersonne("Parker", "Tony", "Parker.tony@hotmail.fr"),
+//		kobe = inscriptions.createPersonne("kobe", "Bryant", "Bryant.kobe@gmail.fr"),
+//		
+//		Robinot = inscriptions.createPersonne("Robinot", "Alexandre", "Robinot.Alexandre@yopmail.fr"),
+//		XiaoXin = inscriptions.createPersonne("XiaoXin", "Yang", "XiaoXin.Yang@hotmail.fr");
+//				
 //		flechettes.add(tony);
-//		Equipe lesManouches = inscriptions.createEquipe("Les Manouches");
-//		lesManouches.add(boris);
-//		lesManouches.add(tony);
-//		System.out.println(inscriptions);
-//		lesManouches.delete();
-//		System.out.println(inscriptions);
-
+//		flechettes.add(boris);
+//		
+//		Equipe Lakers = inscriptions.createEquipe("Lakers");
+//		Lakers.add(tony2);
+//		Lakers.add(kobe);
+//		
+//		basketBall.add(Lakers);
+//		
+//		pingPong.add(Robinot);
+//		pingPong.add(XiaoXin);
 		
 		try
 		{

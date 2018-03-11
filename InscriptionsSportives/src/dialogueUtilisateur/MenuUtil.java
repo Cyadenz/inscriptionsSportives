@@ -14,14 +14,10 @@ import commandLineMenus.rendering.examples.util.InOut;
 import inscriptions.*;
 
 public class MenuUtil {
-
-//private ManageEmployees gestionPersonnel;
 	final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	
 	public MenuUtil()
-	{
-//		this.gestionPersonnel = gestionPersonnel;
-	}	
+	{}	
 	public void start()
 	{
 		Inscriptions inscriptions = Inscriptions.getInscriptions();
@@ -79,14 +75,20 @@ public class MenuUtil {
 	}
 	private Menu editercompetition(Competition competition, Inscriptions inscriptions)
 	{
-		Menu menu = new Menu("Editer " + competition.getNom());
+		Menu menu = new Menu("Afficher " + competition.getNom());
 		menu.add(afficher(competition));
 		menu.add(changerNom(competition));
 		menu.add(gererDatecloture(competition));
 		if(!competition.estEnEquipe())
+		{
 			menu.add(ajouterPersonne(competition, inscriptions));
+			menu.add(supprimerPersonne(competition));
+		}
 		if(competition.estEnEquipe())
+		{
 			menu.add(ajouterEquipe(competition, inscriptions));
+			menu.add(supprimerEquipe(competition));
+		}
 		menu.add(supprimer(competition));
 		menu.addBack("q");
 		return menu;
@@ -97,7 +99,7 @@ public class MenuUtil {
 				() -> 
 				{
 					System.out.println("Compétition : "+competition+", état des inscriptions : "+competition.inscriptionsOuvertes()+", Date de cloture des inscriptions : "
-				+competition.getDateCloture()+", Reservé aux équipes ? "+competition.estEnEquipe()+", Candidats de cette compétition : "+competition.getCandidats());
+				+competition.getDateCloture()+", Reservé aux équipes ? "+competition.estEnEquipe()+"\nCandidats de cette compétition : "+competition.getCandidats());
 				}
 		);
 	}
@@ -120,49 +122,34 @@ public class MenuUtil {
 	{
 		return new List<Personne>("Sélectionner une personne à ajouter", "p", 
 				() -> new ArrayList<>(inscriptions.getPersonnes()),
-				(element) -> ajouterPersonnes(competition, element)
+				(index, element) -> {competition.add(element);}
 				);	
 	}
 	private Option ajouterEquipe(Competition competition, Inscriptions inscriptions)
 	{
 		return new List<Equipe>("Sélectionner une équipe à ajouter", "e", 
 				() -> new ArrayList<>(inscriptions.getEquipes()),
-				(element) -> ajouterEquipes(competition, element)
+				(index, element) -> {competition.add(element);}
 				);	
 	}
-	private Menu ajouterEquipes(Competition competition, Equipe equipe)
+	private Option supprimerPersonne(Competition competition)
 	{
-		Menu menu = new Menu("ajouter " + equipe.getNom());
-		menu.add(valider(competition, equipe));
-		menu.addBack("q");
-		return menu;
+		return new List<Candidat>("Sélectionner une personne à supprimer de la compétition "+competition.getNom(), "x", 
+				() -> new ArrayList<>(competition.getCandidats()),
+				(index, element) -> {competition.remove(element);}
+				);
 	}
-	private Option valider(Competition competition, Equipe equipe)
+	private Option supprimerEquipe(Competition competition)
 	{
-		return new Option("Êtes-vous sur de vouloir inscrire "+equipe.getNom()+" à la compétition "+competition.getNom(), "v", () -> 
-		{
-			competition.add(equipe);
-		} );
-	}
-	private Menu ajouterPersonnes(Competition competition, Personne personne)
-	{
-		Menu menu = new Menu("ajouter " + personne.getNom()+" "+personne.getPrenom());
-		menu.add(valider(competition, personne));
-		menu.addBack("q");
-		return menu;
-	}
-	private Option valider(Competition competition, Personne personne)
-	{
-		return new Option("Êtes-vous sur de vouloir inscrire "+personne.getNom()+" "+personne.getPrenom()+" à la compétition "+competition.getNom(), "v", () -> 
-		{
-			competition.add(personne);
-		} );
+		return new List<Candidat>("Sélectionner une équipe à supprimer de la compétition "+competition.getNom(), "s", 
+				() -> new ArrayList<>(competition.getCandidats()),
+				(index, element) -> {competition.remove(element);}
+				);
 	}
 	private Option supprimer(Competition competition)
 	{
 		return new Option("Supprimer", "d", () -> {competition.delete();});
-	}
-		
+	}	
 	private Menu Equipe(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Gérer les équipes", "e");
@@ -216,22 +203,8 @@ public class MenuUtil {
 	{
 		return new List<Personne>("Sélectionner une personne à ajouter dans l'équipe", "a", 
 				() -> new ArrayList<>(inscriptions.getPersonnes()),
-				(element) -> ajoutPersonnesEquipe(element, equipe)
-				);
-	}
-	private Menu ajoutPersonnesEquipe(Personne personne, Equipe equipe)
-	{
-		Menu menu = new Menu("ajouter " + personne.getNom()+" "+personne.getPrenom());
-		menu.add(valider(equipe, personne));
-		menu.addBack("q");
-		return menu;
-	}
-	private Option valider(Equipe equipe, Personne personne)
-	{
-		return new Option("Êtes-vous sur de vouloir inscrire "+personne.getNom()+" "+personne.getPrenom()+" à l'équipe "+equipe.getNom(), "v", () -> 
-		{
-			equipe.add(personne);
-		} );
+				(index, element) -> {equipe.add(element);}
+                );
 	}
 	private Option changerNomEquipe(final Equipe equipe)
 	{
@@ -286,7 +259,7 @@ public class MenuUtil {
 	}
 	private Option afficherPersonne(Personne personne)
 	{
-		return new Option("Afficher les informations", "l", () -> {System.out.println("Nom : "+personne.getNom()+" Prenom : "+personne.getPrenom()+" Mail : "+personne.getMail());});
+		return new Option("Afficher les informations", "l", () -> {System.out.println("Nom : "+personne.getNom()+"\nPrenom : "+personne.getPrenom()+"\nMail : "+personne.getMail());});
 	}
 	private Option changerNomPersonne(final Personne personne)
 	{
@@ -322,7 +295,6 @@ public class MenuUtil {
 				{
 					try
 					{
-//						gestionPersonnel.sauvegarder();
 						inscriptions.sauvegarder();
 						Action.QUIT.optionSelected();
 					} 
@@ -337,28 +309,11 @@ public class MenuUtil {
 	{
 		return new Option("Quitter sans enregistrer", "a", Action.QUIT);
 	}
-//	private Option afficherCandidats(final Competition competition)
-//	{
-//		return new Option("Afficher les candidats", "l", () -> {System.out.println(competition.getCandidats());});
-//	}
-//	private LocalDate recupDateLocalFormat(String input)
-//	{
-//		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-//        final LocalDate localDate = LocalDate.parse(input, DATE_FORMAT);
-//        return localDate;
-//	}
-//	private boolean verifiePassword()
-//	{
-//		boolean ok = gestionPersonnel.getRoot().checkPassword(getString("password : "));
-//		if (!ok)
-//			System.out.println("Password incorrect.");
-//		return ok;
-//	}
+
 	public static void main(String[] args)
 	{		
 		MenuUtil personnelConsole = 
 				new MenuUtil();
-//		if (personnelConsole.verifiePassword())
 			personnelConsole.start();
 		
 	}
