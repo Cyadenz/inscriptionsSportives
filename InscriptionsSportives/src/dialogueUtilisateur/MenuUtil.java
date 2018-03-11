@@ -23,34 +23,22 @@ private ManageEmployees gestionPersonnel;
 	public MenuUtil(ManageEmployees gestionPersonnel)
 	{
 		this.gestionPersonnel = gestionPersonnel;
-	}
-	
+	}	
 	public void start()
 	{
 		Inscriptions inscriptions = Inscriptions.getInscriptions();
 		menuPrincipal(inscriptions).start();
-	}
-	
+	}	
 	private Menu menuPrincipal(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Gestion du personnel");
-		menu.add(editerEmploye(gestionPersonnel.getRoot()));
+//		menu.add(editerEmploye(gestionPersonnel.getRoot()));
 		menu.add(Compet(inscriptions));
 		menu.add(Equipe(inscriptions));
 		menu.add(Personne(inscriptions));
 		menu.add(menuQuitter(inscriptions));
 		return menu;
-	}
-
-	private Menu menuQuitter(Inscriptions inscriptions)
-	{
-		Menu menu = new Menu("Quitter", "q");
-		menu.add(quitterEtEnregistrer(inscriptions));
-		menu.add(quitterSansEnregistrer());
-		menu.addBack("r");
-		return menu;
-	}
-	
+	}	
 	private Menu Compet(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Gérer les Compétitions", "l");
@@ -60,17 +48,87 @@ private ManageEmployees gestionPersonnel;
 		menu.addBack("q");
 		return menu;
 	}
-	
-	private Menu Personne(Inscriptions inscriptions)
+	private Option afficher(Inscriptions inscriptions)
 	{
-		Menu menu = new Menu("Gérer les personnes", "a");
-		menu.add(afficherPersonnes(inscriptions));
-		menu.add(ajouterPersonne(inscriptions));
-		menu.add(selectionnerPersonne(inscriptions));
+		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
+	}
+	private Option ajoutercompetition(Inscriptions inscriptions) // Besoin de 2 options pour l'équipe
+	{
+		return new Option("Ajouter une competition", "a", () -> 
+		{
+			inscriptions.createCompetition((getString("nom : ")), null, false);
+		} );	
+	}
+	private List<Competition> selectionnercompetition(Inscriptions inscriptions)
+	{
+		return new List<Competition>("Sélectionner une competition", "e", 
+				() -> new ArrayList<>(inscriptions.getCompetitions()),
+				(element) -> editercompetition(element, inscriptions)
+				);
+	}
+	private Menu editercompetition(Competition competition, Inscriptions inscriptions)
+	{
+		Menu menu = new Menu("Editer " + competition.getNom());
+		menu.add(afficher(competition));
+		menu.add(changerNom(competition));
+		menu.add(gererDatecloture(competition)); // NE FONCTIONNE PAS
+		menu.add(ajouterCandidat(competition, inscriptions));
+		menu.add(supprimer(competition));
 		menu.addBack("q");
 		return menu;
 	}
-	
+	private Option afficher(final Competition competition)
+	{
+		return new Option("Afficher la competition", "l", 
+				() -> 
+				{
+					System.out.println("Compétition : "+competition+", Etat des inscriptions : "+competition.inscriptionsOuvertes()+", Date de cloture : "
+				+competition.getDateCloture()+", Reserve aux equipes ? "+competition.estEnEquipe()+", Candidats de cette compétition :"+competition.getCandidats());
+				}
+		);
+	}
+	private Option changerNom(final Competition competition)
+	{
+		return new Option("Renommer le nom de la compétition", "r", 
+				() -> {competition.setNom(getString("Nouveau nom : "));});
+	}
+	private Option gererDatecloture(final Competition competition)
+	{        
+		return new Option("Changer la date de cloture de la compétition", "c", 
+				() -> {
+					final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			        final String input = getString("Nouvelle date : ");
+			        final LocalDate dateChanger = LocalDate.parse(input, DATE_FORMAT);
+			        
+					competition.setDateCloture(dateChanger);
+					});
+	}
+	private Option ajouterCandidat(Competition competition, Inscriptions inscriptions)
+	{
+		return new List<Personne>("Sélectionner une personne à ajouter", "e", 
+				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				(element) -> ajouterPersonnes(competition, element)
+				);	
+	}
+	private Menu ajouterPersonnes(Competition competition, Personne personne)
+	{
+		Menu menu = new Menu("ajouter " + personne.getNom()+" "+personne.getPrenom());
+		menu.add(valider(competition, personne));
+		menu.addBack("q");
+		return menu;
+	}
+	private Option valider(Competition competition, Personne personne)
+	{
+		return new Option("Êtes-vous sur ?", "v", () -> 
+		{
+			competition.add(personne);
+		} );
+	}
+	private Option supprimer(Competition competition)
+	{
+		return new Option("Supprimer", "d", () -> {competition.delete();});
+	}
+		
 	private Menu Equipe(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Gérer les équipes", "e");
@@ -80,10 +138,24 @@ private ManageEmployees gestionPersonnel;
 		menu.addBack("q");
 		return menu;
 	}
-	private Option afficher(Inscriptions inscriptions)
+	private Menu Personne(Inscriptions inscriptions)
 	{
-		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
-	}
+		Menu menu = new Menu("Gérer les personnes", "a");
+		menu.add(afficherPersonnes(inscriptions));
+		menu.add(ajouterPersonne(inscriptions));
+		menu.add(selectionnerPersonne(inscriptions));
+		menu.addBack("q");
+		return menu;
+	}		
+	private Menu menuQuitter(Inscriptions inscriptions)
+	{
+		Menu menu = new Menu("Quitter", "q");
+		menu.add(quitterEtEnregistrer(inscriptions));
+		menu.add(quitterSansEnregistrer());
+		menu.addBack("r");
+		return menu;
+	}	
+	
 	private Option afficherEquipe(Inscriptions inscriptions)
 	{
 		return new Option("Afficher les équipes", "l", () -> {System.out.println(inscriptions.getEquipes());});
@@ -95,16 +167,6 @@ private ManageEmployees gestionPersonnel;
 	private Option afficherPersonnes(Inscriptions inscriptions)
 	{
 		return new Option("Afficher les personnes", "l", () -> {System.out.println(inscriptions.getPersonnes());});
-	}
-	private Option afficher(final Competition competition)
-	{
-		return new Option("Afficher la competition", "l", 
-				() -> 
-				{
-					System.out.println("Compétition : "+competition+", Etat des inscriptions : "+competition.inscriptionsOuvertes()+", Date de cloture : "
-				+competition.getDateCloture()+", Reserve aux equipes ? "+competition.estEnEquipe()+", Candidats de cette compétition :"+competition.getCandidats());
-				}
-		);
 	}
 
 	private Option afficher(final Employee employe)
@@ -125,14 +187,6 @@ private ManageEmployees gestionPersonnel;
 		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         final LocalDate localDate = LocalDate.parse(input, DATE_FORMAT);
         return localDate;
-	}
-	private Option ajoutercompetition(Inscriptions inscriptions)
-	{
-		return new Option("Ajouter une competition", "a", () -> 
-		{
-			inscriptions.createCompetition((getString("nom : ")), null, false);
-		} );
-//AJOUT DE 2 OPTIONS POUR L4EQUIPE		
 	}
 	private Option ajouterEquipe(Inscriptions inscriptions)
 	{
@@ -157,17 +211,6 @@ private ManageEmployees gestionPersonnel;
 				() -> new ArrayList<>(inscriptions.getPersonnes()),
 				(element) -> editerPersonnes(element)
 				);
-	}
-	private Menu editercompetition(Competition competition)
-	{
-		Menu menu = new Menu("Editer " + competition.getNom());
-		menu.add(afficher(competition));
-		menu.add(changerNom(competition));
-		menu.add(gererDatecloture(competition)); // NE FONCTIONNE PAS
-		menu.add(gererCandidats(competition));
-		menu.add(supprimer(competition));
-		menu.addBack("q");
-		return menu;
 	}
 	private Menu editerEquipes(Equipe equipe, Inscriptions inscriptions)
 	{
@@ -202,34 +245,18 @@ private ManageEmployees gestionPersonnel;
 		return menu;
 	}
 
-	private Menu gererCandidats(Competition competition)
-	{
-		Menu menu = new Menu("Gérer les candidats de " + competition.getNom(), "e");
-		menu.add(afficherCandidats(competition));
-//		menu.add(ajouterEmploye(competition));
-//		menu.add(modifierEmploye(competition));
-//		menu.add(supprimerCandidatCompet(competition));
-		menu.addBack("q");
-		return menu;
-	}
+//	private Menu gererCandidats(Competition competition, Inscriptions inscriptions)
+//	{
+//		Menu menu = new Menu("Gérer les candidats de " + competition.getNom(), "e");
+//		menu.add(afficherCandidats(competition));
+//		menu.add(ajouterCandidat(competition, inscriptions));
+////		menu.add(modifierEmploye(competition));
+////		menu.add(supprimerCandidatCompet(competition));
+//		menu.addBack("q");
+//		return menu;
+//	}
+			
 	
-	private Option gererDatecloture(final Competition competition)
-	{        
-		return new Option("Changer la date de cloture de la compétition", "c", 
-				() -> {
-					final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-			        final String input = getString("Nouvelle date : ");
-			        final LocalDate dateChanger = LocalDate.parse(input, DATE_FORMAT);
-			        
-					competition.setDateCloture(dateChanger);
-					});
-	}		
-	
-	private Option changerNom(final Competition competition)
-	{
-		return new Option("Renommer le nom de la compétition", "r", 
-				() -> {competition.setNom(getString("Nouveau nom : "));});
-	}
 	
 	private Option changerNomEquipe(final Equipe equipe)
 	{
@@ -242,23 +269,20 @@ private ManageEmployees gestionPersonnel;
 		return new Option("Renommer le nom de la personne", "rn", 
 				() -> {personne.setNom(getString("Nouveau nom : "));});
 	}
+	
 	private Option changerPrenomPersonne(final Personne personne)
 	{
 		return new Option("Renommer le prenom de la personne", "rp", 
 				() -> {personne.setPrenom(getString("Nouveau prenom : "));});
 	}
+	
 	private Option changerMailPersonne(final Personne personne)
 	{
 		return new Option("Renommer le mail de la personne", "rm", 
 				() -> {personne.setMail(getString("Nouveau mail : "));});
 	}
-	private List<Competition> selectionnercompetition(Inscriptions inscriptions)
-	{
-		return new List<Competition>("Sélectionner une competition", "e", 
-				() -> new ArrayList<>(inscriptions.getCompetitions()),
-				(element) -> editercompetition(element)
-				);
-	}
+	
+	
 	private List<Equipe> selectionnerEquipe(Inscriptions inscriptions)
 	{
 		return new List<Equipe>("Sélectionner une équipe", "e", 
@@ -273,10 +297,6 @@ private ManageEmployees gestionPersonnel;
 				() -> new ArrayList<>(inscriptions.getPersonnes()),
 				(element) -> editerPersonnes(element)
 				);
-	}
-	private Option supprimer(Competition competition)
-	{
-		return new Option("Supprimer", "d", () -> {competition.delete();});
 	}
 	
 	private Option supprimerEquipe(Equipe equipe)
