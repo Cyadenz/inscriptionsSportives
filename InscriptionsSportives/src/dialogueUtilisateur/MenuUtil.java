@@ -43,7 +43,8 @@ private ManageEmployees gestionPersonnel;
 	{
 		Menu menu = new Menu("Gérer les Compétitions", "l");
 		menu.add(afficher(inscriptions));
-		menu.add(ajoutercompetition(inscriptions));
+		menu.add(ajoutercompetitionEquipe(inscriptions));
+		menu.add(ajoutercompetitionPersonne(inscriptions));
 		menu.add(selectionnercompetition(inscriptions));
 		menu.addBack("q");
 		return menu;
@@ -52,9 +53,16 @@ private ManageEmployees gestionPersonnel;
 	{
 		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
 	}
-	private Option ajoutercompetition(Inscriptions inscriptions) // Besoin de 2 options pour l'équipe
+	private Option ajoutercompetitionEquipe(Inscriptions inscriptions)
 	{
-		return new Option("Ajouter une competition", "a", () -> 
+		return new Option("Ajouter une competition de personnes en équipe", "a", () -> 
+		{
+			inscriptions.createCompetition((getString("nom : ")), null, true);
+		} );	
+	}
+	private Option ajoutercompetitionPersonne(Inscriptions inscriptions)
+	{
+		return new Option("Ajouter une competition de personnes", "b", () -> 
 		{
 			inscriptions.createCompetition((getString("nom : ")), null, false);
 		} );	
@@ -72,7 +80,10 @@ private ManageEmployees gestionPersonnel;
 		menu.add(afficher(competition));
 		menu.add(changerNom(competition));
 		menu.add(gererDatecloture(competition)); // NE FONCTIONNE PAS
-		menu.add(ajouterCandidat(competition, inscriptions));
+		if(!competition.estEnEquipe())
+			menu.add(ajouterPersonne(competition, inscriptions));
+		if(competition.estEnEquipe())
+			menu.add(ajouterEquipe(competition, inscriptions));
 		menu.add(supprimer(competition));
 		menu.addBack("q");
 		return menu;
@@ -103,12 +114,33 @@ private ManageEmployees gestionPersonnel;
 					competition.setDateCloture(dateChanger);
 					});
 	}
-	private Option ajouterCandidat(Competition competition, Inscriptions inscriptions)
+	private Option ajouterPersonne(Competition competition, Inscriptions inscriptions)
 	{
-		return new List<Personne>("Sélectionner une personne à ajouter", "e", 
+		return new List<Personne>("Sélectionner une personne à ajouter", "p", 
 				() -> new ArrayList<>(inscriptions.getPersonnes()),
 				(element) -> ajouterPersonnes(competition, element)
 				);	
+	}
+	private Option ajouterEquipe(Competition competition, Inscriptions inscriptions)
+	{
+		return new List<Equipe>("Sélectionner une équipe à ajouter", "e", 
+				() -> new ArrayList<>(inscriptions.getEquipes()),
+				(element) -> ajouterEquipes(competition, element)
+				);	
+	}
+	private Menu ajouterEquipes(Competition competition, Equipe equipe)
+	{
+		Menu menu = new Menu("ajouter " + equipe.getNom());
+		menu.add(valider(competition, equipe));
+		menu.addBack("q");
+		return menu;
+	}
+	private Option valider(Competition competition, Equipe equipe)
+	{
+		return new Option("Êtes-vous sur de vouloir inscrire "+equipe.getNom()+" à la compétition "+competition.getNom(), "v", () -> 
+		{
+			competition.add(equipe);
+		} );
 	}
 	private Menu ajouterPersonnes(Competition competition, Personne personne)
 	{
@@ -119,7 +151,7 @@ private ManageEmployees gestionPersonnel;
 	}
 	private Option valider(Competition competition, Personne personne)
 	{
-		return new Option("Êtes-vous sur ?", "v", () -> 
+		return new Option("Êtes-vous sur de vouloir inscrire "+personne.getNom()+" "+personne.getPrenom()+" à la compétition "+competition.getNom(), "v", () -> 
 		{
 			competition.add(personne);
 		} );
@@ -138,6 +170,82 @@ private ManageEmployees gestionPersonnel;
 		menu.addBack("q");
 		return menu;
 	}
+	private Option afficherEquipe(Inscriptions inscriptions)
+	{
+		return new Option("Afficher les équipes", "l", () -> {System.out.println(inscriptions.getEquipes());});
+	}
+	private Option ajouterEquipe(Inscriptions inscriptions)
+	{
+		return new Option("Ajouter une équipe", "a", () -> 
+		{
+			inscriptions.createEquipe(getString("nom : "));
+		} );	
+	}
+	private List<Equipe> selectionnerEquipe(Inscriptions inscriptions)
+	{
+		return new List<Equipe>("Sélectionner une équipe", "e", 
+				() -> new ArrayList<>(inscriptions.getEquipes()),
+				(element) -> editerEquipes(element, inscriptions)
+				);
+	}
+	private Menu editerEquipes(Equipe equipe, Inscriptions inscriptions)
+	{
+		Menu menu = new Menu("Editer " + equipe.getNom());
+		menu.add(afficherEquipe(equipe));
+		menu.add(selectionnerPersonne(equipe, inscriptions));
+		menu.add(selectionnerPersonneAjout(equipe, inscriptions));
+		menu.add(changerNomEquipe(equipe));
+		menu.add(supprimerEquipe(equipe));
+		menu.addBack("q");
+		return menu;
+	}
+	private Option afficherEquipe(final Equipe equipe)
+	{
+		return new Option("Afficher l'équipe", "l", () -> {System.out.println(equipe+", membres : "+equipe.getMembres());});
+	}
+	private Option selectionnerPersonne(Equipe equipe, Inscriptions inscriptions)
+	{
+		return new List<Personne>("Sélectionner une personne de l'équipe", "e", 
+				() -> new ArrayList<>(equipe.getMembres()),
+				(element) -> editerPersonnes(element)
+				);
+	}
+	private Option selectionnerPersonneAjout(Equipe equipe, Inscriptions inscriptions)
+	{
+		return new List<Personne>("Sélectionner une personne à ajouter dans l'équipe", "a", 
+				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				(element) -> ajoutPersonnesEquipe(element, equipe)
+				);
+	}
+	private Menu ajoutPersonnesEquipe(Personne personne, Equipe equipe)
+	{
+		Menu menu = new Menu("ajouter " + personne.getNom()+" "+personne.getPrenom());
+		menu.add(valider(equipe, personne));
+		menu.addBack("q");
+		return menu;
+	}
+	private Option valider(Equipe equipe, Personne personne)
+	{
+		return new Option("Êtes-vous sur de vouloir inscrire "+personne.getNom()+" "+personne.getPrenom()+" à l'équipe "+equipe.getNom(), "v", () -> 
+		{
+			equipe.add(personne);
+		} );
+	}
+	private Option changerNomEquipe(final Equipe equipe)
+	{
+		return new Option("Renommer le nom de l'équipe", "r", 
+				() -> {equipe.setNom(getString("Nouveau nom : "));});
+	}
+	private Option supprimerEquipe(Equipe equipe)
+	{
+		return new Option("Supprimer", "d", () -> {equipe.delete();});
+	}
+	
+	
+	
+	
+	
+	
 	private Menu Personne(Inscriptions inscriptions)
 	{
 		Menu menu = new Menu("Gérer les personnes", "a");
@@ -156,10 +264,7 @@ private ManageEmployees gestionPersonnel;
 		return menu;
 	}	
 	
-	private Option afficherEquipe(Inscriptions inscriptions)
-	{
-		return new Option("Afficher les équipes", "l", () -> {System.out.println(inscriptions.getEquipes());});
-	}
+
 	private Option afficherCandidats(final Competition competition)
 	{
 		return new Option("Afficher les candidats", "l", () -> {System.out.println(competition.getCandidats());});
@@ -174,10 +279,6 @@ private ManageEmployees gestionPersonnel;
 		return new Option("Afficher l'employé", "l", () -> {System.out.println(employe);});
 	}
 	
-	private Option afficherEquipe(final Equipe equipe)
-	{
-		return new Option("Afficher l'équipe", "l", () -> {System.out.println(equipe);});
-	}
 	private Option afficherPersonne(Personne personne)
 	{
 		return new Option("Afficher les informations", "l", () -> {System.out.println("Nom : "+personne.getNom()+" Prenom : "+personne.getPrenom()+" Mail : "+personne.getMail());});
@@ -188,13 +289,6 @@ private ManageEmployees gestionPersonnel;
         final LocalDate localDate = LocalDate.parse(input, DATE_FORMAT);
         return localDate;
 	}
-	private Option ajouterEquipe(Inscriptions inscriptions)
-	{
-		return new Option("Ajouter une équipe", "a", () -> 
-		{
-			inscriptions.createEquipe(getString("nom : "));
-		} );	
-	}
 	private Option ajouterPersonne(Inscriptions inscriptions)
 	{
 		return new Option("Ajouter une personne", "a",
@@ -204,23 +298,6 @@ private ManageEmployees gestionPersonnel;
 						getString("prenom : "), getString("mail : "));
 				}	
 		);
-	}
-	private Option selectionnerPersonne(Equipe equipe, Inscriptions inscriptions)
-	{
-		return new List<Personne>("Sélectionner une personne", "e", 
-				() -> new ArrayList<>(inscriptions.getPersonnes()),
-				(element) -> editerPersonnes(element)
-				);
-	}
-	private Menu editerEquipes(Equipe equipe, Inscriptions inscriptions)
-	{
-		Menu menu = new Menu("Editer " + equipe.getNom());
-		menu.add(afficherEquipe(equipe));
-		menu.add(selectionnerPersonne(equipe, inscriptions));
-		menu.add(changerNomEquipe(equipe));
-		menu.add(supprimerEquipe(equipe));
-		menu.addBack("q");
-		return menu;
 	}
 	private Menu editerPersonnes(Personne personne)
 	{
@@ -245,25 +322,8 @@ private ManageEmployees gestionPersonnel;
 		return menu;
 	}
 
-//	private Menu gererCandidats(Competition competition, Inscriptions inscriptions)
-//	{
-//		Menu menu = new Menu("Gérer les candidats de " + competition.getNom(), "e");
-//		menu.add(afficherCandidats(competition));
-//		menu.add(ajouterCandidat(competition, inscriptions));
-////		menu.add(modifierEmploye(competition));
-////		menu.add(supprimerCandidatCompet(competition));
-//		menu.addBack("q");
-//		return menu;
-//	}
 			
-	
-	
-	private Option changerNomEquipe(final Equipe equipe)
-	{
-		return new Option("Renommer le nom de l'équipe", "r", 
-				() -> {equipe.setNom(getString("Nouveau nom : "));});
-	}
-
+		
 	private Option changerNomPersonne(final Personne personne)
 	{
 		return new Option("Renommer le nom de la personne", "rn", 
@@ -281,15 +341,7 @@ private ManageEmployees gestionPersonnel;
 		return new Option("Renommer le mail de la personne", "rm", 
 				() -> {personne.setMail(getString("Nouveau mail : "));});
 	}
-	
-	
-	private List<Equipe> selectionnerEquipe(Inscriptions inscriptions)
-	{
-		return new List<Equipe>("Sélectionner une équipe", "e", 
-				() -> new ArrayList<>(inscriptions.getEquipes()),
-				(element) -> editerEquipes(element, inscriptions)
-				);
-	}
+
 	
 	private List<Personne> selectionnerPersonne(Inscriptions inscriptions)
 	{
@@ -299,10 +351,6 @@ private ManageEmployees gestionPersonnel;
 				);
 	}
 	
-	private Option supprimerEquipe(Equipe equipe)
-	{
-		return new Option("Supprimer", "d", () -> {equipe.delete();});
-	}
 	private Option supprimerPersonne(Personne personne)
 	{
 		return new Option("Supprimer", "d", () -> {personne.delete();});
