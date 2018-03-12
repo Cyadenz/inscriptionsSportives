@@ -256,6 +256,7 @@ public class Inscriptions implements Serializable
 //		Competition basketBall = inscriptions.createCompetition("Mondial de Basket-Ball", localDate, true);
 //		Competition pingPong = inscriptions.createCompetition("Mondial de ping-pong", localDate, false);
 //		
+//		pingPong.delete();
 //		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "Tony.ddp@hotmail.fr"), 
 //		boris = inscriptions.createPersonne("Boris", "le Hachoir", "Boris.LH@hotmail.fr"),
 //		
@@ -276,6 +277,7 @@ public class Inscriptions implements Serializable
 //		
 //		pingPong.add(Robinot);
 //		pingPong.add(XiaoXin);
+		
 		
 		try
 		{
