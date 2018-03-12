@@ -48,7 +48,7 @@ public class MenuUtil {
 	}
 	private Option ajoutercompetitionEquipe(Inscriptions inscriptions)
 	{
-		return new Option("Ajouter une competition de personnes en équipe", "a", () -> 
+		return new Option("Ajouter une competition d'équipes", "a", () -> 
 		{
 			try
 			{
@@ -122,7 +122,7 @@ public class MenuUtil {
 	}
 	private Option gererDatecloture(final Competition competition)
 	{        
-		return new Option("Changer la date de cloture de la compétition", "c", 
+		return new Option("Changer la date de cloture de la compétition ( format : jj-mm-aaaa )", "c", 
 				() -> {
 					try
 					{
