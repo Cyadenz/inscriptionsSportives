@@ -50,20 +50,32 @@ public class MenuUtil {
 	{
 		return new Option("Ajouter une competition de personnes en équipe", "a", () -> 
 		{
-			String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition : ");
-            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
-            
-			inscriptions.createCompetition((getString("nom : ")), localDate, true);
+			try
+			{
+				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : jj-mm-aaaa ) : ");
+	            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
+				inscriptions.createCompetition((getString("nom : ")), localDate, true);
+			}
+			catch(java.time.format.DateTimeParseException e)
+			{
+				System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
+			}
 		} );	
 	}
 	private Option ajoutercompetitionPersonne(Inscriptions inscriptions)
 	{
 		return new Option("Ajouter une competition de personnes", "b", () -> 
 		{	
-			String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition : ");
-            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
-            
-			inscriptions.createCompetition((getString("nom : ")), localDate, false);
+			try
+			{
+				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : jj-mm-aaaa ) : ");
+				final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
+				inscriptions.createCompetition((getString("nom : ")), localDate, false);
+			}
+			catch(java.time.format.DateTimeParseException e)
+			{
+				System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
+			}
 		} );	
 	}
 	private List<Competition> selectionnercompetition(Inscriptions inscriptions)
@@ -112,24 +124,44 @@ public class MenuUtil {
 	{        
 		return new Option("Changer la date de cloture de la compétition", "c", 
 				() -> {
-					String dateCloture = InOut.getString("Entrer la date de clôture : ");
-		            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
-			        
-					competition.setDateCloture(localDate);
+					try
+					{
+						String dateCloture = InOut.getString("Entrer la date de clôture : ");
+			            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
+				        
+						competition.setDateCloture(localDate);
+					}
+					catch(java.time.format.DateTimeParseException e)
+					{
+						System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
+					}
 					});
 	}
 	private Option ajouterPersonne(Competition competition, Inscriptions inscriptions)
 	{
 		return new List<Personne>("Sélectionner une personne à ajouter", "p", 
-				() -> new ArrayList<>(inscriptions.getPersonnes()),
-				(index, element) -> {competition.add(element);}
+				() -> 
+				new ArrayList<>(inscriptions.getPersonnes()),
+				(index, element) -> {
+					try {competition.add(element);}		
+					catch (java.lang.RuntimeException e)
+					{
+						System.out.println("La date de clôture est antérieur à la date d'aujourd'hui code d'erreur :"+e);
+					}
+									}
 				);	
 	}
 	private Option ajouterEquipe(Competition competition, Inscriptions inscriptions)
 	{
 		return new List<Equipe>("Sélectionner une équipe à ajouter", "e", 
 				() -> new ArrayList<>(inscriptions.getEquipes()),
-				(index, element) -> {competition.add(element);}
+				(index, element) -> {
+				try{competition.add(element);}
+				catch (java.lang.RuntimeException e)
+				{
+					System.out.println("La date de clôture est antérieur à la date d'aujourd'hui code d'erreur :"+e);
+				}
+									}
 				);	
 	}
 	private Option supprimerPersonne(Competition competition)
