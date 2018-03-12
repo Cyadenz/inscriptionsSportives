@@ -183,8 +183,15 @@ public class MenuUtil {
 	}
 	private Option supprimerCompetition(Competition competition)
 	{
-		return new Option("Supprimer la compétition", "d", () -> {competition.delete();});
-		//Exception java.util.ConcurrentModificationException ?
+		return new Option("Supprimer la compétition", "d", () ->
+		{
+			try
+			{competition.delete();}
+			catch(java.util.ConcurrentModificationException e)
+			{
+				System.out.println("Erreur lors de la suppression code de l'erreur : "+e);
+			}
+		});
 	}	
 	private Menu equipe()
 	{
