@@ -189,7 +189,7 @@ public class MenuUtil {
 			{competition.delete();}
 			catch(java.util.ConcurrentModificationException e)
 			{
-				System.out.println("Erreur lors de la suppression code de l'erreur : "+e);
+				System.out.println("Des candidats sont inscrits à cette compétition veuillez les déinscrire avant de supprimer la compétition. Code de l'erreur : "+e);
 			}
 		});
 	}	
