@@ -16,6 +16,8 @@ import commandLineMenus.Action;
 import commandLineMenus.Menu;
 import commandLineMenus.Option;
 import commandLineMenus.rendering.examples.util.InOut;
+import dialogueUtilisateur.MenuUtil;
+import hibernate.*;
 
 /**
  * Point d'entrée dans l'application, un seul objet de type Inscription
@@ -250,7 +252,6 @@ public class Inscriptions implements Serializable
 //		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 //		final LocalDate localDate = LocalDate.parse("01-01-2020", DATE_FORMAT);
 		
-		Inscriptions inscriptions = Inscriptions.getInscriptions();
 		
 //		Competition flechettes = inscriptions.createCompetition("Mondial de fléchettes", localDate, false);
 //		Competition basketBall = inscriptions.createCompetition("Mondial de Basket-Ball", localDate, true);
@@ -278,7 +279,12 @@ public class Inscriptions implements Serializable
 //		pingPong.add(Robinot);
 //		pingPong.add(XiaoXin);
 		
-		
+		Passerelle back = new Passerelle();
+		back.open();
+		Inscriptions inscriptions = Inscriptions.getInscriptions();
+		MenuUtil personnelConsole = new MenuUtil(inscriptions);
+			personnelConsole.start();
+		back.close();
 		try
 		{
 			inscriptions.sauvegarder();
