@@ -55,7 +55,7 @@ public class Passerelle
 			session.close();
 	}
 
-	static void delete(Object o)
+	public static void delete(Object o)
 	{
 		transaction = session.beginTransaction();
 		session.delete(o);
@@ -64,7 +64,7 @@ public class Passerelle
 		session.flush();
 	}
 
-	static void save(Object o)
+	public static void save(Object o)
 	{
 		Transaction tx = session.beginTransaction();
 		session.save(o);

@@ -113,6 +113,7 @@ public class Inscriptions implements Serializable
 			LocalDate dateCloture, boolean enEquipe)
 	{
 		Competition competition = new Competition(this, nom, dateCloture, enEquipe);
+		Passerelle.save(competition);
 		competitions.add(competition);
 		return competition;
 	}
@@ -131,6 +132,7 @@ public class Inscriptions implements Serializable
 	{
 		Personne personne = new Personne(this, nom, prenom, mail);
 		candidats.add(personne);
+		Passerelle.save(personne);
 		return personne;
 	}
 	
@@ -147,16 +149,19 @@ public class Inscriptions implements Serializable
 	{
 		Equipe equipe = new Equipe(this, nom);
 		candidats.add(equipe);
+		Passerelle.save(equipe);
 		return equipe;
 	}
 	
 	void remove(Competition competition)
 	{
+		Passerelle.delete(competition);
 		competitions.remove(competition);
 	}
 	
 	public void remove(Candidat candidat)
 	{
+		Passerelle.delete(candidat);
 		candidats.remove(candidat);
 	}
 	

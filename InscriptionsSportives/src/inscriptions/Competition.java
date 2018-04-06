@@ -19,6 +19,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SortNatural;
 
+import hibernate.Passerelle;
+
 /**
  * ReprÃ©sente une compÃ©tition, c'est-Ã -dire un ensemble de candidats 
  * inscrits Ã  un Ã©vÃ©nement, les inscriptions sont closes Ã  la date dateCloture.
@@ -158,6 +160,7 @@ public class Competition implements Comparable<Competition>, Serializable
 		else if(!inscriptions)
 			throw new RuntimeException();
 		personne.add(this);
+		Passerelle.save(personne);
 		return candidats.add(personne);
 	}
 
@@ -178,6 +181,7 @@ public class Competition implements Comparable<Competition>, Serializable
 		else if(!inscriptions)
 			throw new RuntimeException();
 		equipe.add(this);
+		Passerelle.save(equipe);
 		return candidats.add(equipe);
 	}
 
@@ -190,6 +194,7 @@ public class Competition implements Comparable<Competition>, Serializable
 	public boolean remove(Candidat candidat)
 	{
 		candidat.remove(this);
+		Passerelle.delete(candidat);
 		return candidats.remove(candidat);
 	}
 	
@@ -202,6 +207,7 @@ public class Competition implements Comparable<Competition>, Serializable
 		for (Candidat candidat : candidats)
 			remove(candidat);
 		inscriptions.remove(this);
+		Passerelle.delete(inscriptions);
 	}
 	
 	@Override

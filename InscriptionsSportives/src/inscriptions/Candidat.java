@@ -17,6 +17,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SortNatural;
 
+import hibernate.Passerelle;
+
 /**
  * Candidat à un événement sportif, soit une personne physique, soit une équipe.
  *
@@ -82,11 +84,13 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	
 	boolean add(Competition competition)
 	{
+		Passerelle.save(competition);
 		return competitions.add(competition);
 	}
 
 	public boolean remove(Competition competition)
 	{
+		Passerelle.delete(competition);
 		return competitions.remove(competition);
 	}
 
@@ -99,6 +103,7 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 		for (Competition c : competitions)
 			c.remove(this);
 		inscriptions.remove(this);
+		Passerelle.delete(inscriptions);
 	}
 	
 	@Override

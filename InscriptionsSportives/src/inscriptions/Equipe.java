@@ -15,6 +15,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SortNatural;
 
+import hibernate.Passerelle;
+
 /**
  * Représente une Equipe. C'est-à-dire un ensemble de personnes pouvant 
  * s'inscrire à une compétition.
@@ -61,6 +63,7 @@ public class Equipe extends Candidat
 	public boolean add(Personne membre)
 	{
 		membre.add(this);
+		Passerelle.save(membre);
 		return membres.add(membre);
 	}
 
@@ -73,6 +76,7 @@ public class Equipe extends Candidat
 	public boolean remove(Personne membre)
 	{
 		membre.remove(this);
+		Passerelle.delete(membre);
 		return membres.remove(membre);
 	}
 
