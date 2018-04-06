@@ -12,6 +12,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.SortNatural;
+
 import commandLineMenus.Action;
 import commandLineMenus.Menu;
 import commandLineMenus.Option;
@@ -27,11 +37,15 @@ import hibernate.*;
 
 public class Inscriptions implements Serializable
 {
+
 	private static final long serialVersionUID = -3095339436048473524L;
 	private static final String FILE_NAME = "Inscriptions.srz";
 	private static Inscriptions inscriptions;
-	
+
+
 	private SortedSet<Competition> competitions = new TreeSet<>();
+	
+
 	private SortedSet<Candidat> candidats = new TreeSet<>();
 
 	private Inscriptions()

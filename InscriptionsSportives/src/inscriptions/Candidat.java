@@ -5,17 +5,44 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.*;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.SortNatural;
+
 /**
  * Candidat à un événement sportif, soit une personne physique, soit une équipe.
  *
  */
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 
 public abstract class Candidat implements Comparable<Candidat>, Serializable
 {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	
 	private static final long serialVersionUID = -6035399822298694746L;
+	@Transient
 	private Inscriptions inscriptions;
 	private String nom;
+	
+	@OneToMany(mappedBy = "candidat")
+	@Cascade(value = { CascadeType.ALL })
+	@SortNatural
 	private Set<Competition> competitions;
+	
+	@ManyToOne
+	@Cascade(value = { CascadeType.SAVE_UPDATE})
+	private Competition competition;
 	
 	Candidat(Inscriptions inscriptions, String nom)
 	{
