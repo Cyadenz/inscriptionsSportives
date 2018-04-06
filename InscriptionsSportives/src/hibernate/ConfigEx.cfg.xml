@@ -5,7 +5,9 @@
 
 <hibernate-configuration>
     <session-factory >
-
+    
+		<!-- fichier exemple -->
+		
 		<!-- local connection properties -->
 	    <property name="hibernate.dialect">
 	    	org.hibernate.dialect.MySQLDialect</property>
