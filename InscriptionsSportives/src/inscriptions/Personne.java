@@ -65,6 +65,7 @@ public class Personne extends Candidat
 	public void setPrenom(String prenom)
 	{
 		this.prenom = prenom;
+		Passerelle.save(this);
 	}
 
 	/**
@@ -85,6 +86,7 @@ public class Personne extends Candidat
 	public void setMail(String mail)
 	{
 		this.mail = mail;
+		Passerelle.save(this);
 	}
 
 	/**
@@ -114,8 +116,10 @@ public class Personne extends Candidat
 	{
 		super.delete();
 		for (Equipe e : equipes)
+			{
 			e.remove(this);
-		Passerelle.delete(equipe);
+			Passerelle.delete(this);
+			}
 	}
 	
 	@Override

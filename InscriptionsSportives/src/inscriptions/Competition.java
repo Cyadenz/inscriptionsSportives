@@ -77,6 +77,7 @@ public class Competition implements Comparable<Competition>, Serializable
 	public void setNom(String nom)
 	{
 		this.nom = nom ;
+		Passerelle.save(this);
 	}
 	
 	/**
@@ -131,6 +132,7 @@ public class Competition implements Comparable<Competition>, Serializable
 			System.out.println("Vous ne pouvez pas avancer la date !");
 		else
 			this.dateCloture = dateCloture;
+		Passerelle.save(this);
 	}
 	
 	/**
