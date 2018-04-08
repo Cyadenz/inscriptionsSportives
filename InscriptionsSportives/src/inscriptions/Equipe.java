@@ -4,12 +4,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -26,12 +21,8 @@ import hibernate.Passerelle;
 public class Equipe extends Candidat
 {	
 	private static final long serialVersionUID = 4147819927233466035L;
-	
-	@ManyToOne
-	@Cascade(value = { CascadeType.SAVE_UPDATE})
-	private Personne personne;
-	
-	@OneToMany(mappedBy = "equipe")
+		
+	@ManyToMany
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private SortedSet<Personne> membres = new TreeSet<>();
@@ -59,6 +50,7 @@ public class Equipe extends Candidat
 	public boolean add(Personne membre)
 	{
 		membre.add(this);
+		membres.add(membre);
 		Passerelle.save(membre);
 		return membres.add(membre);
 	}
@@ -72,6 +64,7 @@ public class Equipe extends Candidat
 	public boolean remove(Personne membre)
 	{
 		membre.remove(this);
+		membres.remove(membre);
 		Passerelle.delete(membre);
 		return membres.remove(membre);
 	}

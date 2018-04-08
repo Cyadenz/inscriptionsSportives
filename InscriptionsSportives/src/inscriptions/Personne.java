@@ -4,12 +4,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -28,16 +24,11 @@ public class Personne extends Candidat
 	private String mail;
 
 	private static final long serialVersionUID = 4434646724271327254L;
-//	private String prenom, mail;
 	
-	@OneToMany(mappedBy = "personne")
+	@OneToMany(targetEntity=Personne.class, mappedBy = "equipes", fetch=FetchType.EAGER)
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Equipe> equipes;
-	
-	@ManyToOne
-	@Cascade(value = { CascadeType.SAVE_UPDATE})
-	private Equipe equipe;
 	
 	Personne(Inscriptions inscriptions, String nom, String prenom, String mail)
 	{
@@ -107,6 +98,7 @@ public class Personne extends Candidat
 
 	boolean remove(Equipe equipe)
 	{
+		equipes.remove(equipe);
 		Passerelle.delete(equipe);
 		return equipes.remove(equipe);
 	}
@@ -115,11 +107,9 @@ public class Personne extends Candidat
 	public void delete()
 	{
 		super.delete();
-		for (Equipe e : equipes)
-			{
-			e.remove(this);
+		for (Equipe e : equipes) 
 			Passerelle.delete(this);
-			}
+//			e.remove(this);
 	}
 	
 	@Override

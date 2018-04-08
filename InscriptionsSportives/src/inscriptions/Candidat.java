@@ -5,12 +5,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
@@ -33,18 +27,16 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	private int id;
 	
 	private static final long serialVersionUID = -6035399822298694746L;
+	
 	@Transient
 	private Inscriptions inscriptions;
+	
 	private String nom;
 	
-	@OneToMany(mappedBy = "candidat")
+	@OneToMany(targetEntity=Candidat.class, mappedBy = "competitions", fetch=FetchType.EAGER)
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Competition> competitions;
-	
-	@ManyToOne
-	@Cascade(value = { CascadeType.SAVE_UPDATE})
-	private Competition competition;
 	
 	Candidat(Inscriptions inscriptions, String nom)
 	{
@@ -91,6 +83,7 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 
 	public boolean remove(Competition competition)
 	{
+		competitions.remove(competition);
 		Passerelle.delete(competition);
 		return competitions.remove(competition);
 	}
@@ -103,8 +96,8 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	{
 		for (Competition c : competitions)
 			c.remove(this);
-		inscriptions.remove(this);
-		Passerelle.delete(inscriptions);
+		//inscriptions.remove(this);
+		Passerelle.delete(this);
 	}
 	
 	@Override

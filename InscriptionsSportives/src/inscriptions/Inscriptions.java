@@ -154,14 +154,12 @@ public class Inscriptions implements Serializable
 	
 	void remove(Competition competition)
 	{
-		Passerelle.delete(competition);
-		competitions.remove(competition);
+		Passerelle.delete(this);
 	}
 	
 	public void remove(Candidat candidat)
 	{
-		Passerelle.delete(candidat);
-		candidats.remove(candidat);
+		Passerelle.delete(this);
 	}
 	
 	/**

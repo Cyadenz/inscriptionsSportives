@@ -28,15 +28,12 @@ public class Competition implements Comparable<Competition>, Serializable
 	private int id;
 	
 	private static final long serialVersionUID = -2882150118573759729L;
+	
 	@Transient
 	private Inscriptions inscriptions;
 	private String nom;
 	
-	@ManyToOne
-	@Cascade(value = { CascadeType.SAVE_UPDATE})
-	private Candidat candidat;
-	
-	@OneToMany(mappedBy = "competition")
+	@ManyToMany
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Candidat> candidats;
@@ -192,7 +189,9 @@ public class Competition implements Comparable<Competition>, Serializable
 	public boolean remove(Candidat candidat)
 	{
 		candidat.remove(this);
+		candidats.remove(candidat);
 		Passerelle.delete(candidat);
+//		candidat.remove(this);
 		return candidats.remove(candidat);
 	}
 	
@@ -204,8 +203,8 @@ public class Competition implements Comparable<Competition>, Serializable
 	{
 		for (Candidat candidat : candidats)
 			remove(candidat);
-		inscriptions.remove(this);
-		Passerelle.delete(inscriptions);
+		Passerelle.delete(this);
+		//inscriptions.remove(this);
 	}
 	
 	@Override
