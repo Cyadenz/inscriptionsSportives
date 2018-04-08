@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import commandLineMenus.Action;
 import commandLineMenus.List;
 import commandLineMenus.Menu;
 import commandLineMenus.Option;
 import commandLineMenus.rendering.examples.util.InOut;
+import hibernate.Passerelle;
 import inscriptions.*;
 
 public class MenuUtil {
@@ -49,7 +49,7 @@ public class MenuUtil {
 	}
 	private Option afficherLesCompetitions()
 	{
-		return new Option("Afficher les competitions", "l", () -> {System.out.println(inscriptions.getCompetitions());});
+		return new Option("Afficher les competitions", "l", () -> {System.out.println(Passerelle.getData("Competition"));});
 	}
 	private Option creerCompetitionEquipe()
 	{
@@ -86,7 +86,7 @@ public class MenuUtil {
 	private List<Competition> selectionnerCompetition()
 	{
 		return new List<Competition>("Sélectionner une competition", "e", 
-				() -> new ArrayList<>(inscriptions.getCompetitions()),
+				() -> new ArrayList<>(Passerelle.getData("Competition")),
 				(element) -> editerCompetition(element)
 				);
 	}
@@ -127,7 +127,7 @@ public class MenuUtil {
 	}
 	private Option gererDateCloture(final Competition competition)
 	{        
-		return new Option("Changer la date de cloture de la compétition ( format : aaaa -mm- jj)", "c", 
+		return new Option("Changer la date de cloture de la compétition ( format : jj-mm-aaaa)", "c", 
 				() -> {
 					try
 					{
@@ -146,7 +146,7 @@ public class MenuUtil {
 	{
 		return new List<Personne>("Sélectionner une personne à ajouter", "p", 
 				() -> 
-				new ArrayList<>(inscriptions.getPersonnes()),
+				new ArrayList<>(Passerelle.getData("Personne")),
 				(index, element) -> {
 					try {competition.add(element);}		
 					catch (java.lang.RuntimeException e)
@@ -159,7 +159,7 @@ public class MenuUtil {
 	private Option ajouterEquipeCompetition(Competition competition)
 	{
 		return new List<Equipe>("Sélectionner une équipe à ajouter", "e", 
-				() -> new ArrayList<>(inscriptions.getEquipes()),
+				() -> new ArrayList<>(Passerelle.getData("Equipe")),
 				(index, element) -> {
 				try{competition.add(element);}
 				catch (java.lang.RuntimeException e)
@@ -206,7 +206,7 @@ public class MenuUtil {
 	}
 	private Option afficherEquipe()
 	{
-		return new Option("Afficher les équipes", "l", () -> {System.out.println(inscriptions.getEquipes());});
+		return new Option("Afficher les équipes", "l", () -> {System.out.println(Passerelle.getData("Equipe"));});
 	}
 	private Option creerEquipe()
 	{
@@ -218,7 +218,7 @@ public class MenuUtil {
 	private List<Equipe> selectionnerEquipe()
 	{
 		return new List<Equipe>("Sélectionner une équipe", "e", 
-				() -> new ArrayList<>(inscriptions.getEquipes()),
+				() -> new ArrayList<>(Passerelle.getData("Equipe")),
 				(element) -> editerEquipes(element)
 				);
 	}
@@ -248,7 +248,7 @@ public class MenuUtil {
 	private Option selectionnerPersonneAjoutEquipe(Equipe equipe)
 	{
 		return new List<Personne>("Sélectionner une personne à ajouter dans l'équipe", "a", 
-				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				() -> new ArrayList<>(Passerelle.getData("Personne")),
 				(index, element) -> {equipe.add(element);}
                 );
 	}
@@ -280,7 +280,7 @@ public class MenuUtil {
 	}	
 	private Option afficherPersonnes()
 	{
-		return new Option("Afficher les personnes", "l", () -> {System.out.println(inscriptions.getPersonnes());});
+		return new Option("Afficher les personnes", "l", () -> {System.out.println(Passerelle.getData("Personne"));});
 	}
 	private Option creerPersonne()
 	{
@@ -295,7 +295,7 @@ public class MenuUtil {
 	private List<Personne> selectionnerPersonne()
 	{
 		return new List<Personne>("Sélectionner une personne", "e", 
-				() -> new ArrayList<>(inscriptions.getPersonnes()),
+				() -> new ArrayList<>(Passerelle.getData("Personne")),
 				(element) -> editerPersonnes(element)
 				);
 	}
