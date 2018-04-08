@@ -121,11 +121,13 @@ public class Competition implements Comparable<Competition>, Serializable
 	public void setDateCloture(Date dateCloture)
 	{
 		// TODO vÃ©rifier que l'on avance pas la date.
-		if (dateCloture.after(this.dateCloture))
+		if (dateCloture.before(this.dateCloture))
 			System.out.println("Vous ne pouvez pas avancer la date !");
 		else
+		{
 			this.dateCloture = dateCloture;
-		Passerelle.save(this);
+			Passerelle.save(this);
+		}
 	}
 	
 	/**

@@ -23,6 +23,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.SortNatural;
 
 import commandLineMenus.Action;
+import commandLineMenus.List;
 import commandLineMenus.Menu;
 import commandLineMenus.Option;
 import commandLineMenus.rendering.examples.util.InOut;
@@ -57,33 +58,41 @@ public class Inscriptions implements Serializable
 	 * @return
 	 */
 	
-	public SortedSet<Competition> getCompetitions()
-	{
-		return Collections.unmodifiableSortedSet(competitions);
-	}
+//	public SortedSet<Competition> getCompetitions()
+//	{
+//		return Collections.unmodifiableSortedSet(competitions);
+//	}
+	 public List<Competition> getCompetitions()
+	    {
+	        return (List<Competition>) Passerelle.getData("Competition");
+	    }
 	
 	/**
 	 * Retourne tous les candidats (personnes et équipes confondues).
 	 * @return
 	 */
 	
-	public SortedSet<Candidat> getCandidats()
-	{
-		return Collections.unmodifiableSortedSet(candidats);
-	}
+//	public SortedSet<Candidat> getCandidats()
+//	{
+//		return Collections.unmodifiableSortedSet(candidats);
+//	}
+	 public List<Candidat> getCandidats()
+	    {
+	        return (List<Candidat>) Passerelle.getData("Candidat");
+	    }
 
 	/**
 	 * Retourne toutes les personnes.
 	 * @return
 	 */
 	
-	public SortedSet<Personne> getPersonnes()
+	public List<Personne> getPersonnes()
 	{
-		SortedSet<Personne> personnes = new TreeSet<>();
-		for (Candidat c : getCandidats())
-			if (c instanceof Personne)
-				personnes.add((Personne)c);
-		return Collections.unmodifiableSortedSet(personnes);
+//		SortedSet<Personne> personnes = new TreeSet<>();
+//		for (Candidat c : getCandidats())
+//			if (c instanceof Personne)
+//				personnes.add((Personne)c);
+		return (List<Personne>) Passerelle.getData("Personne");
 	}
 
 	/**
@@ -91,13 +100,14 @@ public class Inscriptions implements Serializable
 	 * @return
 	 */
 	
-	public SortedSet<Equipe> getEquipes()
+	public List<Equipe> getEquipes()
 	{
-		SortedSet<Equipe> equipes = new TreeSet<>();
-		for (Candidat c : getCandidats())
-			if (c instanceof Equipe)
-				equipes.add((Equipe)c);
-		return Collections.unmodifiableSortedSet(equipes);
+//		SortedSet<Equipe> equipes = new TreeSet<>();
+//		for (Candidat c : getCandidats())
+//			if (c instanceof Equipe)
+//				equipes.add((Equipe)c);
+//		return Collections.unmodifiableSortedSet(equipes);
+		return (List<Equipe>) Passerelle.getData("Equipe");
 	}
 
 	/**

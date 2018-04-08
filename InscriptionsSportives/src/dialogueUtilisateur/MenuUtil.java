@@ -363,11 +363,4 @@ public class MenuUtil {
 		return new Option("Quitter sans enregistrer", "a", Action.QUIT);
 	}
 
-	public static void main(String[] args)
-	{		
-		Inscriptions inscriptions = Inscriptions.getInscriptions();
-		MenuUtil personnelConsole = new MenuUtil(inscriptions);
-			personnelConsole.start();
-		
-	}
 }
