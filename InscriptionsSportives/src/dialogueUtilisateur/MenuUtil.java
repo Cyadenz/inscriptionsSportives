@@ -3,7 +3,9 @@ package dialogueUtilisateur;
 import static commandLineMenus.rendering.examples.util.InOut.getString;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import commandLineMenus.Action;
@@ -16,7 +18,7 @@ import inscriptions.*;
 public class MenuUtil {
 	
 	private Inscriptions inscriptions;
-	final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 	
 	public MenuUtil(Inscriptions inscriptions)
 	{
@@ -55,11 +57,11 @@ public class MenuUtil {
 		{
 			try
 			{
-				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : jj-mm-aaaa ) : ");
-	            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
-				inscriptions.createCompetition((getString("nom : ")), localDate, true);
+				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : dd-MM-yyyy ) : ");
+				Date date = formatter.parse(dateCloture);
+				inscriptions.createCompetition((getString("nom : ")), date, true);
 			}
-			catch(java.time.format.DateTimeParseException e)
+			catch(ParseException e)
 			{
 				System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
 			}
@@ -71,11 +73,11 @@ public class MenuUtil {
 		{	
 			try
 			{
-				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : jj-mm-aaaa ) : ");
-				final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
-				inscriptions.createCompetition((getString("nom : ")), localDate, false);
+				String dateCloture = InOut.getString("Entrer la date de clôture des inscriptions de la compétition ( format : dd-MM-yyyy ) : ");
+				Date date = formatter.parse(dateCloture);
+				inscriptions.createCompetition((getString("nom : ")), date, false);
 			}
-			catch(java.time.format.DateTimeParseException e)
+			catch(ParseException e)
 			{
 				System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
 			}
@@ -125,16 +127,16 @@ public class MenuUtil {
 	}
 	private Option gererDateCloture(final Competition competition)
 	{        
-		return new Option("Changer la date de cloture de la compétition ( format : jj-mm-aaaa )", "c", 
+		return new Option("Changer la date de cloture de la compétition ( format : aaaa -mm- jj)", "c", 
 				() -> {
 					try
 					{
 						String dateCloture = InOut.getString("Entrer la date de clôture : ");
-			            final LocalDate localDate = LocalDate.parse(dateCloture, DATE_FORMAT);
+						Date date = formatter.parse(dateCloture);
 				        
-						competition.setDateCloture(localDate);
+						competition.setDateCloture(date);
 					}
-					catch(java.time.format.DateTimeParseException e)
+					catch(ParseException e)
 					{
 						System.out.println("Vous avez une erreur de saisie dans votre date, code de l'erreur : "+e);
 					}

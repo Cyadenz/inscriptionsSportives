@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
-import java.time.LocalDate;
+import java.util.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -109,8 +109,7 @@ public class Inscriptions implements Serializable
 	 * @return
 	 */
 	
-	public Competition createCompetition(String nom, 
-			LocalDate dateCloture, boolean enEquipe)
+	public Competition createCompetition(String nom, Date dateCloture, boolean enEquipe)
 	{
 		Competition competition = new Competition(this, nom, dateCloture, enEquipe);
 		Passerelle.save(competition);
@@ -188,7 +187,7 @@ public class Inscriptions implements Serializable
 	 * et candidats déjà existants.
 	 */
 	
-	public Inscriptions reinitialiser()
+	public static Inscriptions reinitialiser()
 	{
 		inscriptions = new Inscriptions();
 		return getInscriptions();
@@ -267,40 +266,10 @@ public class Inscriptions implements Serializable
 	}
 	
 	public static void main(String[] args)
-	{       
-//		final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-//		final LocalDate localDate = LocalDate.parse("01-01-2020", DATE_FORMAT);
-		
-		
-//		Competition flechettes = inscriptions.createCompetition("Mondial de fléchettes", localDate, false);
-//		Competition basketBall = inscriptions.createCompetition("Mondial de Basket-Ball", localDate, true);
-//		Competition pingPong = inscriptions.createCompetition("Mondial de ping-pong", localDate, false);
-//		
-//		pingPong.delete();
-//		Personne tony = inscriptions.createPersonne("Tony", "Dent de plomb", "Tony.ddp@hotmail.fr"), 
-//		boris = inscriptions.createPersonne("Boris", "le Hachoir", "Boris.LH@hotmail.fr"),
-//		
-//		tony2 = inscriptions.createPersonne("Parker", "Tony", "Parker.tony@hotmail.fr"),
-//		kobe = inscriptions.createPersonne("kobe", "Bryant", "Bryant.kobe@gmail.fr"),
-//		
-//		Robinot = inscriptions.createPersonne("Robinot", "Alexandre", "Robinot.Alexandre@yopmail.fr"),
-//		XiaoXin = inscriptions.createPersonne("XiaoXin", "Yang", "XiaoXin.Yang@hotmail.fr");
-//				
-//		flechettes.add(tony);
-//		flechettes.add(boris);
-//		
-//		Equipe Lakers = inscriptions.createEquipe("Lakers");
-//		Lakers.add(tony2);
-//		Lakers.add(kobe);
-//		
-//		basketBall.add(Lakers);
-//		
-//		pingPong.add(Robinot);
-//		pingPong.add(XiaoXin);
-		
+	{       	
 		Passerelle back = new Passerelle();
 		back.open();
-		Inscriptions inscriptions = Inscriptions.getInscriptions();
+		Inscriptions inscriptions = Inscriptions.reinitialiser();
 		MenuUtil personnelConsole = new MenuUtil(inscriptions);
 			personnelConsole.start();
 		back.close();

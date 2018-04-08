@@ -1,19 +1,13 @@
 package inscriptions;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.time.LocalDate;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -47,11 +41,13 @@ public class Competition implements Comparable<Competition>, Serializable
 	@SortNatural
 	private Set<Candidat> candidats;
 	
-	private LocalDate dateCloture;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCloture;
 	
+	@Column(columnDefinition="tinyint(1) default 0")
 	private boolean enEquipe = false;
 
-	Competition(Inscriptions inscriptions, String nom, LocalDate dateCloture, boolean enEquipe)
+	Competition(Inscriptions inscriptions, String nom, Date dateCloture, boolean enEquipe)
 	{
 		this.enEquipe = enEquipe;
 		this.inscriptions = inscriptions;
@@ -89,9 +85,9 @@ public class Competition implements Comparable<Competition>, Serializable
 	public boolean inscriptionsOuvertes()
 	{	
 		// TODO retourner vrai si et seulement si la date système est antérieure Ã  la date de cloture.
-		LocalDate DateSys = LocalDate.now();
+		Date DateSys = new Date();
 		try {
-			if (DateSys.isAfter(getDateCloture()))
+			if (DateSys.after(getDateCloture()))
 				return false;
 		} catch (Exception e) {
 			System.out.println("La date n'est pas donnée");
@@ -104,8 +100,8 @@ public class Competition implements Comparable<Competition>, Serializable
 	 * @return
 	 */
 	
-	public LocalDate getDateCloture()
-	{
+	public Date getDateCloture()
+	{	
 		return dateCloture;
 	}
 	
@@ -125,10 +121,10 @@ public class Competition implements Comparable<Competition>, Serializable
 	 * @param dateCloture
 	 */
 	
-	public void setDateCloture(LocalDate dateCloture)
+	public void setDateCloture(Date dateCloture)
 	{
 		// TODO vÃ©rifier que l'on avance pas la date.
-		if (dateCloture.isAfter(this.dateCloture))
+		if (dateCloture.after(this.dateCloture))
 			System.out.println("Vous ne pouvez pas avancer la date !");
 		else
 			this.dateCloture = dateCloture;

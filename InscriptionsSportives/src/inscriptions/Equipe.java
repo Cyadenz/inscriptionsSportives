@@ -31,10 +31,6 @@ public class Equipe extends Candidat
 	@Cascade(value = { CascadeType.SAVE_UPDATE})
 	private Personne personne;
 	
-	@ManyToOne
-	@Cascade(value = { CascadeType.SAVE_UPDATE})
-	private Equipe equipe;
-	
 	@OneToMany(mappedBy = "equipe")
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
