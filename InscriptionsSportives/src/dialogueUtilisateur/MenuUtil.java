@@ -191,7 +191,7 @@ public class MenuUtil {
 			{competition.delete();}
 			catch(java.util.ConcurrentModificationException e)
 			{
-				System.out.println("Des candidats sont inscrits à cette compétition veuillez les déinscrire avant de supprimer la compétition. Code de l'erreur : "+e);
+				System.out.println("");
 			}
 		});
 	}	
@@ -266,7 +266,17 @@ public class MenuUtil {
 	}
 	private Option supprimerEquipe(Equipe equipe)
 	{
-		return new Option("Supprimer", "d", () -> {equipe.delete();});
+		return new Option("Supprimer", "d", () -> 
+		{
+			try
+			{
+				equipe.delete();
+			}
+			catch(java.util.ConcurrentModificationException e)
+			{
+				System.out.println("");
+			}
+		});
 	}	
 	
 	private Menu personne()
@@ -337,7 +347,7 @@ public class MenuUtil {
 			{personne.delete();}
 			catch(org.hibernate.StaleStateException e)
 			{
-				
+				System.out.println("");
 			}
 		});
 	}
