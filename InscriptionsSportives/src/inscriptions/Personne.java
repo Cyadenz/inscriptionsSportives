@@ -25,7 +25,7 @@ public class Personne extends Candidat
 
 	private static final long serialVersionUID = 4434646724271327254L;
 	
-	@OneToMany(targetEntity=Personne.class, mappedBy = "equipes", fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy = "membres")
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Equipe> equipes;

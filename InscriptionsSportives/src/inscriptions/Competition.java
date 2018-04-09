@@ -31,6 +31,7 @@ public class Competition implements Comparable<Competition>, Serializable
 	
 	@Transient
 	private Inscriptions inscriptions;
+	
 	private String nom;
 	
 	@ManyToMany
@@ -151,12 +152,13 @@ public class Competition implements Comparable<Competition>, Serializable
 	public boolean add(Personne personne)
 	{
 		// TODO vÃ©rifier que la date de cloture n'est pas passée
-		boolean inscriptions = inscriptionsOuvertes();
-		if (enEquipe)
+		boolean inscription = inscriptionsOuvertes();
+		if (enEquipe) 
 			throw new RuntimeException();
-		else if(!inscriptions)
+		else if(!inscription)
 			throw new RuntimeException();
 		personne.add(this);
+		candidats.add(personne);
 		Passerelle.save(personne);
 		return candidats.add(personne);
 	}
@@ -172,12 +174,13 @@ public class Competition implements Comparable<Competition>, Serializable
 	public boolean add(Equipe equipe)
 	{
 		// TODO vÃ©rifier que la date de clÃ´ture n'est pas passÃ©e
-		boolean inscriptions = inscriptionsOuvertes();
+		boolean inscription = inscriptionsOuvertes();
 		if (!enEquipe)
 			throw new RuntimeException();
-		else if(!inscriptions)
+		else if(!inscription)
 			throw new RuntimeException();
 		equipe.add(this);
+		candidats.add(equipe);
 		Passerelle.save(equipe);
 		return candidats.add(equipe);
 	}

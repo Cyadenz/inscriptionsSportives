@@ -331,7 +331,15 @@ public class MenuUtil {
 	}
 	private Option supprimerPersonne(Personne personne)
 	{
-		return new Option("Supprimer", "d", () -> {personne.delete();});
+		return new Option("Supprimer", "d", () -> 
+		{
+			try
+			{personne.delete();}
+			catch(org.hibernate.StaleStateException e)
+			{
+				
+			}
+		});
 	}
 	private Menu menuQuitter()
 	{

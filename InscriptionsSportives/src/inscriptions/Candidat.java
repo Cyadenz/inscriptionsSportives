@@ -33,7 +33,7 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	
 	private String nom;
 	
-	@OneToMany(targetEntity=Candidat.class, mappedBy = "competitions", fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy = "candidats")
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Competition> competitions;
