@@ -2,67 +2,96 @@ package interfaceGraph;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-/*
- * CODE D'ESSAI L'INTERFACE GRAPH EST DANS FENETRE.JAVA
- */
-public class Panneau extends JFrame{
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
-	private JPanel panel1 = new JPanel();
-	private JPanel panel2 = new JPanel();
+import hibernate.Passerelle;
+import inscriptions.Competition;
 
-	public Panneau(){
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		initMenu();
-		panel1.setBackground(Color.BLUE);
-		panel2.setBackground(Color.RED);
-		setLayout(new BorderLayout());
-	}
+public class Panneau {
 
-	private class MenuAction implements ActionListener {
+    public Panneau() {
 
-		private JPanel panel;
-		private MenuAction(JPanel pnl) {
-			this.panel = pnl;
-		}
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			changePanel(panel);
+        JFrame frame = new JFrame();
+        
+        JPanel panelN = new JPanel();
+        panelN.setBackground(Color.black);
+        
+        
+		JPanel panelC = new JPanel();	
+		panelC.setBackground(Color.BLUE);
+		
 
-		}
-	}
 
-	private void initMenu() {
-		JMenuBar menubar = new JMenuBar();
-		JMenu menu = new JMenu("Menu");
-		JMenuItem menuItem1 = new JMenuItem("Panel1");
-		JMenuItem menuItem2 = new JMenuItem("Panel2");
-		menubar.add(menu);
-		menu.add(menuItem1);
-		menu.add(menuItem2);
-		setJMenuBar(menubar);
-		menuItem1.addActionListener(new MenuAction(panel1));
-		menuItem2.addActionListener(new MenuAction(panel2));
+		Object data[][] = new Object[2][4];;
+		System.out.println("creation ok");
+		for (int i = 0 ; i != 2; i++)			
+			{
+			System.out.println("boucle D "+i);
+			data[i][0] = "ntm";
+			data[i][1] = "ntm";
+			data[i][2] = "ntm";
+			data[i][3] = "ntm";		
+			System.out.println("boucle F "+i);
+			}	
+		String  title[] = {"Compétition", "Candidats", "Date de cloture", "Inscriptions ouvertes ?"};
+		JTable tableau = new JTable(data, title);
+		
+		panelC.add(new JScrollPane(tableau), BorderLayout.CENTER);
+		
+		
+        
+        JPanel panelS = new JPanel();
+        panelS.setBackground(Color.RED);
+        
+        JLabel jlabel = new JLabel("Application Festival de la M2L");
+        jlabel.setFont(new Font("Verdana",1,20));
+        panelN.add(jlabel);
+        JButton button = new JButton("Button");
+        panelS.add(button);
+        JButton button1 = new JButton("Button");
+        JButton button2 = new JButton("Button");
+        JButton button3 = new JButton("Button");
+        panelC.add(button1);
+        panelC.add(button2);
+        panelC.add(button3);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(800, 500));
+        frame.getContentPane().add(panelN, BorderLayout.NORTH);
+        frame.getContentPane().add(panelC, BorderLayout.CENTER);
+        frame.getContentPane().add(panelS, BorderLayout.SOUTH);
+        frame.pack();
+        frame.setVisible(true);
+    }
 
-	}
+    public static void main(String[] args) {
+        new Panneau();
+    }
 
-	private void changePanel(JPanel panel) {
-		getContentPane().removeAll();
-		getContentPane().add(panel, BorderLayout.CENTER);
-		getContentPane().doLayout();
-		update(getGraphics());
-	}
+    public void addColoredText(JTextPane pane, String text, Color color) {
+        StyledDocument doc = pane.getStyledDocument();
 
-	public static void main(String[] args) {
-		Panneau frame = new Panneau();
-		frame.setBounds(200, 200, 300, 200);
-		frame.setVisible(true);
-
-	}
+        Style style = pane.addStyle("Color Style", null);
+        StyleConstants.setForeground(style, color);
+        try {
+            doc.insertString(doc.getLength(), text, style);
+        } 
+        catch (BadLocationException e) {
+            e.printStackTrace();
+        }           
+    }
+    
 }
