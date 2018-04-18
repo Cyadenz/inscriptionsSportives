@@ -162,9 +162,9 @@ public class Inscriptions implements Serializable
 		return equipe;
 	}
 	
-	void remove(Competition competition)
+	public void remove(Competition competition)
 	{
-		Passerelle.delete(this);
+		Passerelle.delete(competition);
 	}
 	
 	public void remove(Candidat candidat)

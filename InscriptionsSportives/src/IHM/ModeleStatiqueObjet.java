@@ -81,20 +81,22 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
     public void addCompetition(String nom, Date date, Boolean EnEquipe) {
     	
     	inscriptions.createCompetition(nom, date, EnEquipe);
+//    	System.out.println(inscriptions.getCompetitions());
     	
     	ArrayList<Competition> compets = new ArrayList<Competition>();
 		compets = (ArrayList) Passerelle.getData("Competition");
 		
-		System.out.println(compets.get(compets.size()));
-    	competitions.add(compets.get(compets.size()));
+		System.out.println(compets.size());
+    	competitions.add(compets.get(compets.size()-1));
  
         fireTableRowsInserted(competitions.size() -1, competitions.size() -1);
     }
  
     public void removeCompetition(int rowIndex) {
+    	System.out.println(competitions.get(rowIndex));
+    	inscriptions.remove(competitions.get(rowIndex));
+    	
     	competitions.remove(rowIndex);
-
-    	//SUPP DANS BDD
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
 }

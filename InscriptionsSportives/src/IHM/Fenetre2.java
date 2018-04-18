@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import hibernate.Passerelle;
+import inscriptions.Competition;
 import inscriptions.Inscriptions;
 
 public class Fenetre2 extends JFrame  {
