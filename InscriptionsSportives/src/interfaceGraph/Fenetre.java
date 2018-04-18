@@ -81,18 +81,30 @@ public class Fenetre extends JFrame implements ActionListener {
 		ArrayList<Competition> competitions = new ArrayList<Competition>();
 		competitions = (ArrayList) Passerelle.getData("Competition");
 		
-		Object data[][] = new Object[competitions.size()][4];
+		Object data[][] = new Object[competitions.size()][6];
 		for (int i = 0 ; i != competitions.size(); i++)			
 			{
 				data[i][0] = competitions.get(i).getNom();
 				data[i][1] = competitions.get(i).getCandidats();
 				data[i][2] = competitions.get(i).getDateCloture();
-				data[i][3] = competitions.get(i).inscriptionsOuvertes();		
+				if(competitions.get(i).estEnEquipe())
+					data[i][3] = new Boolean(true);		
+				else
+					data[i][3] = new Boolean(false);
+				
+				if(competitions.get(i).inscriptionsOuvertes())
+					data[i][4] = new Boolean(true);		
+				else
+					data[i][4] = new Boolean(false);
+				data[i][5] = new JButton("Supprimer");
 			}	
-		String  title[] = {"Compétition", "Candidat(s)", "Date de cloture", "Inscriptions ouvertes ?"};
+		String  title[] = {"Compétition", "Candidat(s)", "Date de cloture", "Réservé aux équipes ?", "Inscriptions ouvertes ?", "Supprimer"};
 		MaJTable model = new MaJTable(data, title);
 		JTable tableau = new JTable(model);	
-		AfficherCompet.add(new JScrollPane(tableau));
+		tableau.setDefaultRenderer(JButton.class, new TableComponent());
+
+//		AfficherCompet.add(new JScrollPane(tableau));
+		AfficherCompet.add(new JScrollPane(tableau), BorderLayout.CENTER);
 		
 		return AfficherCompet;
 	}
