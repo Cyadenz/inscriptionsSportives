@@ -212,6 +212,15 @@ public class Competition implements Comparable<Competition>, Serializable
 		//inscriptions.remove(this);
 	}
 	
+	/**
+	 * Set boolean enEquipe ajout pour mes JTables
+	 */
+	public void setEnEquipe(Boolean enEquipe)
+	{
+		this.enEquipe = enEquipe ;
+		Passerelle.save(this);
+	}
+	
 	@Override
 	public int compareTo(Competition o)
 	{

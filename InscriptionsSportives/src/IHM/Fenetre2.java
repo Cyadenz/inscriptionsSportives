@@ -3,16 +3,24 @@ package IHM;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 import hibernate.Passerelle;
 import inscriptions.Competition;
 import inscriptions.Inscriptions;
@@ -28,7 +36,7 @@ public class Fenetre2 extends JFrame  {
 		super();
 		
 		setTitle("Interface Graphique");
-		setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
 		setLocationRelativeTo(null);
 		setPreferredSize(new Dimension(800, 500));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
@@ -36,12 +44,18 @@ public class Fenetre2 extends JFrame  {
 		
 		tableau = new JTable(modele);
 //		JTable tableau = new JTable(new ModeleStatiqueObjet(inscriptions));
-		 
+		tableau.setDefaultEditor(Boolean.class, new BooleanCellEditor());	
+		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableau.getModel());  
+		sorter.setComparator(1, new DateComparator());
+		tableau.setRowSorter(sorter);
+			
         getContentPane().add(new JScrollPane(tableau), BorderLayout.CENTER);       
         JPanel boutons = new JPanel();
         
         boutons.add(new JButton(new AddAction()));
         boutons.add(new JButton(new RemoveAction()));
+//        boutons.add(new JButton(new FilterAction()));
         
         getContentPane().add(boutons, BorderLayout.SOUTH);
 		pack();
@@ -53,16 +67,8 @@ public class Fenetre2 extends JFrame  {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-        	String date_s = " 2011-01-18 00:00:00.0"; 
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss"); 
-            Date date;
-			try {
-				date = dt.parse(date_s);
-				 modele.addCompetition("test04", date, true);
-			} catch (ParseException e1) {
-				System.out.println("AHhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-				e1.printStackTrace();
-			}
+            Date date = new Date();
+            modele.addCompetition("Default", date, true);
         }
     }
  
@@ -73,10 +79,37 @@ public class Fenetre2 extends JFrame  {
  
         public void actionPerformed(ActionEvent e) {
             int[] selection = tableau.getSelectedRows();
- 
-            for(int i = selection.length - 1; i >= 0; i--){
-                modele.removeCompetition(selection[i]);
+            int[] modelIndexes = new int[selection.length];
+     
+            for(int i = 0; i < selection.length; i++){
+                modelIndexes[i] = tableau.getRowSorter().convertRowIndexToModel(selection[i]);
+            }
+     
+            Arrays.sort(modelIndexes);
+     
+            for(int i = modelIndexes.length - 1; i >= 0; i--){
+                modele.removeCompetition(modelIndexes[i]);
             }
         }
     }
+    
+    public class DateComparator implements Comparator<Date> {
+    	@Override
+        public int compare(Date c1, Date c2) {
+    		return new Integer((c1).compareTo(c2));  		
+    	}
+    }
+//    private class FilterAction extends AbstractAction {
+//        private FilterAction() {
+//            super("Filtrer");
+//        }
+//     
+//        public void actionPerformed(ActionEvent e) {
+//        	TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableau.getModel());   	
+//            String regex = JOptionPane.showInputDialog("Regex de filtre : (Nom/Date)");
+//     
+//            sorter.setRowFilter(RowFilter.regexFilter(regex, 0, 1));
+//            tableau.setRowSorter(sorter);
+//        }
+//    }
 }
