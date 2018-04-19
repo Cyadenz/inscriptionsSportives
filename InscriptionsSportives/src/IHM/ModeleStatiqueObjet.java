@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
 import java.util.Date;
 import java.util.List;
@@ -16,16 +17,16 @@ import inscriptions.Inscriptions;
 
 public class ModeleStatiqueObjet extends AbstractTableModel {
 	private final List<Competition> competitions = new ArrayList<Competition>();
-    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?"};
+    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?", "Ajouter une Equipes"};
     
     private Inscriptions inscriptions;
     public ModeleStatiqueObjet(Inscriptions inscriptions) throws ParseException { 
     	super();
     	this.inscriptions = inscriptions;
     	
-        String date_s = " 2011-01-18 00:00:00.0"; 
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss"); 
-        Date date = dt.parse(date_s);
+//        String date_s = " 2011-01-18 00:00:00.0"; 
+//        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss"); 
+//        Date date = dt.parse(date_s);
     	
 //		inscriptions.createCompetition("test1", date , false);
 //		inscriptions.createCompetition("test2", date , true);
@@ -77,6 +78,8 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
                 return competitions.get(rowIndex).getCandidats();
             case 4:
                 return competitions.get(rowIndex).inscriptionsOuvertes();
+            case 5:
+                return new JComboBox(new String[]{"toto", "titi", "tata"});
             default:
                 return null; //Ne devrait jamais arriver
         }
@@ -101,7 +104,6 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
                 		} 
                 	catch (ParseException e) {
                 		System.out.println("Veuillez saisir une date valable de format dd-MM-yyyy. Code de l'erreur :"+e);
-//						e.printStackTrace();
                 	}
                 break;
                 case 2:
@@ -148,7 +150,9 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
     	if(columnIndex == 3 ||columnIndex == 4)
     		return false;
-        return true; //Toutes les cellules sont éditables
+        return true; //Editable
     }
+    
+
     
 }
