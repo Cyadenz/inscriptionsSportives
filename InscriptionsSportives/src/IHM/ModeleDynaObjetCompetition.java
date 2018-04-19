@@ -5,9 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
+
+import IHM.Fenetre2.Sport;
+
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +16,12 @@ import hibernate.Passerelle;
 import inscriptions.Competition;
 import inscriptions.Inscriptions;
 
-public class ModeleStatiqueObjet extends AbstractTableModel {
+public class ModeleDynaObjetCompetition extends AbstractTableModel {
 	private final List<Competition> competitions = new ArrayList<Competition>();
-    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?", "Ajouter une Equipes"};
+    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?", "Ajouter une equipe", "Supprimer une équipe"};
     
     private Inscriptions inscriptions;
-    public ModeleStatiqueObjet(Inscriptions inscriptions) throws ParseException { 
+    public ModeleDynaObjetCompetition(Inscriptions inscriptions) throws ParseException { 
     	super();
     	this.inscriptions = inscriptions;
     	
@@ -79,7 +80,23 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
             case 4:
                 return competitions.get(rowIndex).inscriptionsOuvertes();
             case 5:
-                return new JComboBox(new String[]{"toto", "titi", "tata"});
+            	if(competitions.get(rowIndex).inscriptionsOuvertes())
+            		{
+            			if(competitions.get(rowIndex).estEnEquipe())
+            				System.out.println(competitions.get(rowIndex).getNom());
+            			else
+            				System.out.println(competitions.get(rowIndex).getNom());
+            		}
+            	return "Default";
+            case 6:
+            	if(competitions.get(rowIndex).inscriptionsOuvertes())
+            		{
+            			if(competitions.get(rowIndex).estEnEquipe())
+            				System.out.println(competitions.get(rowIndex).getNom());
+            			else
+            				System.out.println(competitions.get(rowIndex).getNom());
+            		}
+            	return "Default"; 
             default:
                 return null; //Ne devrait jamais arriver
         }
@@ -141,6 +158,10 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
                 return Boolean.class;
             case 4:
                 return Boolean.class;
+            case 5:
+                return Sport.class;
+            case 6:
+                return Sport.class;
             default:
                 return Object.class;
         }
@@ -151,8 +172,5 @@ public class ModeleStatiqueObjet extends AbstractTableModel {
     	if(columnIndex == 3 ||columnIndex == 4)
     		return false;
         return true; //Editable
-    }
-    
-
-    
+    }       
 }

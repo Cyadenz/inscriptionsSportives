@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +12,9 @@ import java.util.Comparator;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,10 +29,14 @@ import inscriptions.*;
 public class Fenetre2 extends JFrame  {
 	
 	public JFrame frame = new JFrame();	
-    private JTable tableauC;
+    private JTable tableauC;  
+    private JTable tableauE;
+    private JTable tableauCan;
     
-    Inscriptions inscriptions = Inscriptions.reinitialiser();
-    private ModeleStatiqueObjet modele = new ModeleStatiqueObjet(inscriptions);
+    Inscriptions inscriptions = Inscriptions.getInscriptions();
+    private ModeleDynaObjetCompetition modeleC = new ModeleDynaObjetCompetition(inscriptions);
+    private ModeleDynaObjetEquipe modeleE = new ModeleDynaObjetEquipe(inscriptions);
+    
 	public Fenetre2() throws ParseException {	
 		super();
 		
@@ -41,15 +48,29 @@ public class Fenetre2 extends JFrame  {
 		setVisible(true);
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().add(getMainPanel());
-//		AddTabCompet();
 
 		pack();
 	}
 	
+	private JPanel getMainPanel() {
+		JPanel panel = new JPanel();	
+//		panel.setBackground(Color.WHITE);
+		ArrayList<JButton> jButtons = new ArrayList<>();
+		
+		jButtons.add(new JButton(new ButtonCompet("Compétitions")));
+		jButtons.add(new JButton(new ButtonEquipe("Equipes")));
+		jButtons.add(new JButton("Candidats"));
+		for (JButton jButton : jButtons) {
+			panel.add(jButton);
+		}
+		return panel;
+	}
+	
 	private void AddTabCompet() {		
-		tableauC = new JTable(modele);
+		tableauC = new JTable(modeleC);
 //		JTable tableauC = new JTable(new ModeleStatiqueObjet(inscriptions));
 		tableauC.setDefaultEditor(Boolean.class, new BooleanCellEditor());	
+		tableauC.setDefaultEditor(Sport.class, new SportCellEditor());
 		
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauC.getModel());  
 		sorter.setComparator(1, new DateComparator());
@@ -57,41 +78,52 @@ public class Fenetre2 extends JFrame  {
         getContentPane().add(new JScrollPane(tableauC), BorderLayout.CENTER);
         
         JPanel boutons = new JPanel();        
-        boutons.add(new JButton(new AddAction()));
-        boutons.add(new JButton(new RemoveAction()));
+        boutons.add(new JButton(new AddActionC()));
+        boutons.add(new JButton(new RemoveActionC()));
         boutons.add(new JButton(new Retour("retour")));
-//        boutons.add(new JButton(new FilterAction()));
         getContentPane().add(boutons, BorderLayout.SOUTH);
-}
-	
-	private JPanel getMainPanel() {
-		JPanel panel = new JPanel();	
-		panel.setBackground(Color.WHITE);
-		ArrayList<JButton> jButtons = new ArrayList<>();
-		
-		jButtons.add(new JButton(new ButtonCompet("Compétitions")));
-		jButtons.add(new JButton("Equipes"));
-		jButtons.add(new JButton("Candidats"));
-		for (JButton jButton : jButtons) {
-			panel.add(jButton);
-//			jButton.addActionListener(this);
-		}
-		return panel;
 	}
 	
-    private class AddAction extends AbstractAction {
-        private AddAction() {
+	private void AddTabEquipe() {		
+		tableauE = new JTable(modeleE);;
+		tableauE.setDefaultEditor(Boolean.class, new BooleanCellEditor());	
+		tableauE.setDefaultEditor(Sport.class, new SportCellEditor());
+		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauE.getModel());  
+		sorter.setComparator(1, new DateComparator());
+		tableauE.setRowSorter(sorter);			
+        getContentPane().add(new JScrollPane(tableauE), BorderLayout.CENTER);
+        
+        JPanel boutons = new JPanel();        
+        boutons.add(new JButton(new AddActionE()));
+        boutons.add(new JButton(new RemoveActionE()));
+        boutons.add(new JButton(new Retour("retour")));
+        getContentPane().add(boutons, BorderLayout.SOUTH);
+	}
+		
+    private class AddActionC extends AbstractAction {
+        private AddActionC() {
             super("Ajouter");
         }
         @Override
         public void actionPerformed(ActionEvent e) {
             Date date = new Date();
-            modele.addCompetition("Default", date, true);
+            modeleC.addCompetition("Default", date, true);
+        }
+    }
+    
+    private class AddActionE extends AbstractAction {
+        private AddActionE() {
+            super("Ajouter");
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        	modeleE.addEquipe("Default");
         }
     }
  
-    private class RemoveAction extends AbstractAction {
-        private RemoveAction() {
+    private class RemoveActionC extends AbstractAction {
+        private RemoveActionC() {
             super("Supprimer");
         }
  
@@ -106,7 +138,28 @@ public class Fenetre2 extends JFrame  {
             Arrays.sort(modelIndexes);
      
             for(int i = modelIndexes.length - 1; i >= 0; i--){
-                modele.removeCompetition(modelIndexes[i]);
+                modeleC.removeCompetition(modelIndexes[i]);
+            }
+        }
+    }
+    
+    private class RemoveActionE extends AbstractAction {
+        private RemoveActionE() {
+            super("Supprimer");
+        }
+ 
+        public void actionPerformed(ActionEvent e) {
+            int[] selection = tableauE.getSelectedRows();
+            int[] modelIndexes = new int[selection.length];
+     
+            for(int i = 0; i < selection.length; i++){
+                modelIndexes[i] = tableauE.getRowSorter().convertRowIndexToModel(selection[i]);
+            }
+     
+            Arrays.sort(modelIndexes);
+     
+            for(int i = modelIndexes.length - 1; i >= 0; i--){
+                modeleE.removeEquipe(modelIndexes[i]);
             }
         }
     }
@@ -122,7 +175,20 @@ public class Fenetre2 extends JFrame  {
            getContentPane().repaint();
            validate();
         }
-    }    
+    }
+    
+    private class ButtonEquipe extends AbstractAction {
+        private ButtonEquipe(String Nom) {
+            super(Nom);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           getContentPane().removeAll();
+           AddTabEquipe();
+           getContentPane().repaint();
+           validate();
+        }
+    }
     
     private class Retour extends AbstractAction {
         private Retour(String Nom) {
@@ -144,57 +210,16 @@ public class Fenetre2 extends JFrame  {
     	}
     }
     
-	public void actionPerformed(ActionEvent e) {
-		switch (((JButton) e.getSource()).getText())
-		{
-		case "Compétitions":
-			System.out.println("Compétitions");
-//			changePanel(1);
-			break;
-			
-		case "Equipes":
-			System.out.println("Equipes");
-			break;
-		default:
-			System.out.println("default");
-		}	
+	public enum Sport {
+	    TENNIS,
+	    FOOTBALL,
+	    NATATION,
+	    RIEN;
 	}
 	
-//
-////	public void changePanel(int x, Competition competition)
-//	{
-//		frame.invalidate();
-//		frame.getContentPane().removeAll();
-//		frame.getContentPane().add(createJPN(), BorderLayout.NORTH);
-//		switch (x)
-//		{
-//			case 0 : 
-//				frame.getContentPane().add(getMainPanel(), BorderLayout.CENTER); 
-//				frame.getContentPane().add(createJPS(false, 0), BorderLayout.SOUTH);
-//			break;
-//			case 1 : 
-//				frame.getContentPane().add(PanelCompet(), BorderLayout.CENTER);
-//				frame.getContentPane().add(createJPS(true, 0), BorderLayout.SOUTH);
-//			break;
-//		}
-//		frame.validate();
-//	}
-//	
-//	public void changePanel(int x)
-//	{
-//		changePanel(x, null);
-//	}
-//    private class FilterAction extends AbstractAction {
-//        private FilterAction() {
-//            super("Filtrer");
-//        }
-//     
-//        public void actionPerformed(ActionEvent e) {
-//        	TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauC.getModel());   	
-//            String regex = JOptionPane.showInputDialog("Regex de filtre : (Nom/Date)");
-//     
-//            sorter.setRowFilter(RowFilter.regexFilter(regex, 0, 1));
-//            tableauC.setRowSorter(sorter);
-//        }
-//    }
+	public class SportCellEditor extends DefaultCellEditor {
+	    public SportCellEditor() {
+	        super(new JComboBox(Sport.values()));
+	    }
+	}
 }

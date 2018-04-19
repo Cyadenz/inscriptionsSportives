@@ -169,7 +169,8 @@ public class Inscriptions implements Serializable
 	
 	public void remove(Candidat candidat)
 	{
-		Passerelle.delete(this);
+//		Passerelle.delete(this);
+		Passerelle.delete(candidat);
 	}
 	
 	/**
