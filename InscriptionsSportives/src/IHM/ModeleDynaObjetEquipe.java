@@ -3,7 +3,7 @@ package IHM;
 import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import IHM.Fenetre2.Sport;
+import IHM.Fenetre2.Eq;
 import java.util.List;
 import hibernate.Passerelle;
 import inscriptions.Equipe;
@@ -134,9 +134,9 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
 //            case 4:
 //                return Boolean.class;
             case 3:
-                return Sport.class;
+                return Eq.class;
             case 4:
-                return Sport.class;
+                return Eq.class;
             default:
                 return Object.class;
         }

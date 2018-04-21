@@ -5,20 +5,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
-import IHM.Fenetre2.Sport;
+import IHM.Fenetre2.Eq;
 
 import java.util.Date;
 import java.util.List;
 
 import hibernate.Passerelle;
 import inscriptions.Competition;
+import inscriptions.Equipe;
 import inscriptions.Inscriptions;
+import sun.rmi.runtime.RuntimeUtil.GetInstanceAction;
 
 public class ModeleDynaObjetCompetition extends AbstractTableModel {
 	private final List<Competition> competitions = new ArrayList<Competition>();
     private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?", "Ajouter une equipe", "Supprimer une équipe"};
+    
+    public JFrame frame = new JFrame();
     
     private Inscriptions inscriptions;
     public ModeleDynaObjetCompetition(Inscriptions inscriptions) throws ParseException { 
@@ -79,24 +87,17 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
                 return competitions.get(rowIndex).getCandidats();
             case 4:
                 return competitions.get(rowIndex).inscriptionsOuvertes();
-            case 5:
-            	if(competitions.get(rowIndex).inscriptionsOuvertes())
-            		{
-            			if(competitions.get(rowIndex).estEnEquipe())
-            				System.out.println(competitions.get(rowIndex).getNom());
-            			else
-            				System.out.println(competitions.get(rowIndex).getNom());
-            		}
-            	return "Default";
-            case 6:
-            	if(competitions.get(rowIndex).inscriptionsOuvertes())
-            		{
-            			if(competitions.get(rowIndex).estEnEquipe())
-            				System.out.println(competitions.get(rowIndex).getNom());
-            			else
-            				System.out.println(competitions.get(rowIndex).getNom());
-            		}
-            	return "Default"; 
+//            case 5:
+//            	return competitions.get(rowIndex).;
+//            case 6:
+//            	if(competitions.get(rowIndex).inscriptionsOuvertes())
+//            		{
+//            			if(competitions.get(rowIndex).estEnEquipe())
+//            				System.out.println(competitions.get(rowIndex).getNom());
+//            			else
+//            				System.out.println(competitions.get(rowIndex).getNom());
+//            		}
+//            	return "Default"; 
             default:
                 return null; //Ne devrait jamais arriver
         }
@@ -109,7 +110,7 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
             switch(columnIndex){
                 case 0:
                     competition.setNom((String)aValue);
-                    break;
+                break;
                 case 1:
                 	String str_date = (String)aValue;
                 	DateFormat formatter;
@@ -119,28 +120,47 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
                 			date = formatter.parse(str_date);
                 			competition.setDateCloture(date);
                 		} 
-                	catch (ParseException e) {
-                		System.out.println("Veuillez saisir une date valable de format dd-MM-yyyy. Code de l'erreur :"+e);
-                	}
+                		catch(ParseException e)
+                    	{
+                    		JOptionPane.showMessageDialog(frame, "Veuillez saisir une date valide de format dd-MM-yyyy, ex : 20-11-2019.", "Erreur de saisie d'une date.", JOptionPane.ERROR_MESSAGE);
+                    	}
                 break;
                 case 2:
-                	String enEquipe = "" + aValue; 
-                    competition.setEnEquipe(Boolean.valueOf(enEquipe));
-                    break;
+                	if(competition.getCandidats().isEmpty())
+                	{
+                		String enEquipe = "" + aValue; 
+                		competition.setEnEquipe(Boolean.valueOf(enEquipe));
+                    }
+                	else
+                		JOptionPane.showMessageDialog(frame, "Vous ne pouvez pas changer le type de la compétition lorsque celle-ci contient déjà des équipes/personnes ! Veuillez d'abord supprimer les équipes/personnes ou la compétition.", "Erreur de changement de type de compétition.", JOptionPane.ERROR_MESSAGE);
+                break;
+                case 5:
+                	try
+                	{
+	                	competition.add((Equipe)aValue);
+	                	System.out.println("Ajout de l'"+aValue);
+                	}
+                    catch(java.lang.RuntimeException e3)
+                	{
+                		JOptionPane.showMessageDialog(frame, "Vous ne pouvez pas ajouter d'équipes ou de personnes lorsque la date d'inscription de la compétition est close !", "Erreur lors de l'ajout d'une équipe/personne.", JOptionPane.ERROR_MESSAGE);
+                	}
+                break;
+                case 6:
+                	System.out.println("Suppresion de l'"+aValue);
+                	competition.remove((Equipe)aValue);
+                break;
+//                	
             }
         }
     }    
     public void addCompetition(String nom, Date date, Boolean EnEquipe) {
     	
-    	inscriptions.createCompetition(nom, date, EnEquipe);
-    	
-    	ArrayList<Competition> compets = new ArrayList<Competition>();
-		compets = (ArrayList) Passerelle.getData("Competition");
-		
-		System.out.println(compets.size());
-    	competitions.add(compets.get(compets.size()-1));
- 
-        fireTableRowsInserted(competitions.size() -1, competitions.size() -1);
+	    	inscriptions.createCompetition(nom, date, EnEquipe);    	
+	    	ArrayList<Competition> compets = new ArrayList<Competition>();
+			compets = (ArrayList) Passerelle.getData("Competition");		
+			System.out.println(compets.size());
+	    	competitions.add(compets.get(compets.size()-1)); 
+	        fireTableRowsInserted(competitions.size() -1, competitions.size() -1);
     }
  
     public void removeCompetition(int rowIndex) {
@@ -159,9 +179,9 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
             case 4:
                 return Boolean.class;
             case 5:
-                return Sport.class;
+                return Eq.class;
             case 6:
-                return Sport.class;
+                return Eq.class;
             default:
                 return Object.class;
         }
@@ -172,5 +192,6 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
     	if(columnIndex == 3 ||columnIndex == 4)
     		return false;
         return true; //Editable
-    }       
+    }     
+    
 }
