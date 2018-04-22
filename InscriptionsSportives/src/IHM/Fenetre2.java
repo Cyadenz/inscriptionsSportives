@@ -6,22 +6,32 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -49,14 +59,14 @@ public class Fenetre2 extends JFrame  {
 		
 		setTitle("Application de la M2L (Maison des ligues de Lorraine)");
 		setAlwaysOnTop(false);
-		setLocationRelativeTo(null);
-		setPreferredSize(new Dimension(800, 500));
+		setPreferredSize(new Dimension(1200, 700));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
-		setVisible(true);
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().add(getMainPanel());
 		
 		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 	
 	private JPanel getMainPanel() {
@@ -70,9 +80,23 @@ public class Fenetre2 extends JFrame  {
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.NORTH;
 		
+		JLabel label = new JLabel();	
+		label.setText("<html><h1><i><font color='red'>Inscriptions sportives de la Maison des ligues de Lorraine<br /></font></i></h1></html>");
 		
-		panel.add(new JLabel("<html><h1><i>Inscriptions sportives de la Maison des ligues de Lorraine<br /></i></h1></html>"), gbc);
+		panel.add(label, gbc);
 
+		try {
+			BufferedImage myPicture;
+			myPicture = ImageIO.read(new File("C:\\Users\\Ugo\\git\\inscriptionsSportives\\InscriptionsSportives\\src\\logoM2L.png")); 
+			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			panel.add(picLabel, gbc);
+			
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(new JFrame(), "Problème avec le logo de la M2L\n Code de l'erreur :"+e
+					+"\n Veuillez vérifier le chemin \\inscriptionsSportives\\InscriptionsSporftives\\src\\logoM2L.png \n La page d'accueil va se charger sans le logo."
+					+ "", "Problème d'image", JOptionPane.ERROR_MESSAGE);
+		}
+		
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
@@ -84,7 +108,7 @@ public class Fenetre2 extends JFrame  {
 		buttons.add(new JButton("Contact"), gbc);
 		buttons.add(new JButton(new ButtonQuitter()), gbc);
 		
-		gbc.weighty = 2;
+		gbc.weighty = 1;
 		panel.add(buttons, gbc);
 		
 		return panel;
@@ -109,9 +133,8 @@ public class Fenetre2 extends JFrame  {
 	}
 	
 	private void AddTabEquipe() {		
-		tableauE = new JTable(modeleE);;
-		tableauE.setDefaultEditor(Boolean.class, new BooleanCellEditor());	
-		tableauE.setDefaultEditor(Eq.class, new EqCellEditorAdd());
+		tableauE = new JTable(modeleE);
+		tableauE.setDefaultEditor(Pers.class, new PersCellEditorAdd());
 		
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauE.getModel());  
 		sorter.setComparator(1, new DateComparator());
@@ -126,7 +149,7 @@ public class Fenetre2 extends JFrame  {
 	}
 	
 	private void AddTabPersonne() {		
-		tableauP = new JTable(modeleP);;
+		tableauP = new JTable(modeleP);		
 		
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauP.getModel()); 
 		tableauP.setRowSorter(sorter);			
@@ -145,10 +168,46 @@ public class Fenetre2 extends JFrame  {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            Date date = new Date();
-        	modeleC.addCompetition("Default", date, true);
+        		JPanel jop = new JPanel();       		
+       
+	    	    JTextField NomField = new JTextField(30);
+	    	    JTextField DateField = new JTextField(30);
+	    	    
+	    	    jop.add(new JLabel("Nom de la compétition :"));
+	    	    jop.add(NomField);
+	    	    
+	    	    jop.add(new JLabel("Date de la compétition :"));
+	    	    jop.add(DateField);	  	    	    
+	    	    
+	    	    jop.add(new JLabel("Compétition réservé aux équipes ?"));
+	    	    JComboBox<String> combo = new JComboBox<String>();
+        		combo.addItem("Oui");
+        		combo.addItem("Non");
+        		jop.add(combo);	
+        		
+	    	    int result = JOptionPane.showConfirmDialog(null, jop, "Veuillez entrer les données de la compétition.", JOptionPane.OK_CANCEL_OPTION);	    	    		
+	    	    if (result == JOptionPane.OK_OPTION) {	 	    	    	
+	    			Object getTypeCompet = combo.getSelectedItem();  		
+	    	    	DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+	    	    	
+	    	    	if(!NomField.getText().isEmpty())
+		    	    	try {
+		    	    		Date date = formatter.parse(DateField.getText());
+		    	    		boolean enEquipe;		
+							if(getTypeCompet.equals("Non"))
+								enEquipe = false;
+							else
+								enEquipe = true;
+		    	    		modeleC.addCompetition(NomField.getText(), date, enEquipe);
+	            		} 
+	            		catch(ParseException e2){
+	                		JOptionPane.showMessageDialog(frame, "Veuillez saisir une date valide de format dd-MM-yyyy ou dd-MM-yyyy-hh-mm, ex : 20-11-2019 ou 20-11-2019-12-30.", "Erreur de saisie d'une date.", JOptionPane.ERROR_MESSAGE);
+	                	}
+	    	    	else
+	    	    		JOptionPane.showMessageDialog(frame, "Veuillez saisir un Nom de compétition valide.", "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
+	    	      }    	     			
+    		}
         }
-    }
     
     private class AddActionE extends AbstractAction {
         private AddActionE() {
@@ -156,7 +215,7 @@ public class Fenetre2 extends JFrame  {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-        	modeleE.addEquipe("Default");
+        	modeleE.addEquipe("Equipe");
         }
     }
     
@@ -166,7 +225,7 @@ public class Fenetre2 extends JFrame  {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-        	modeleP.addPersonne("Default", "Default", "Default");
+        	modeleP.addPersonne("Personne", "Personne", "Personne@mail");
         }
     }
  
@@ -175,19 +234,23 @@ public class Fenetre2 extends JFrame  {
             super("Supprimer");
         }
  
-        public void actionPerformed(ActionEvent e) {
-            int[] selection = tableauC.getSelectedRows();
-            int[] modelIndexes = new int[selection.length];
-     
-            for(int i = 0; i < selection.length; i++){
-                modelIndexes[i] = tableauC.getRowSorter().convertRowIndexToModel(selection[i]);
-            }
-     
-            Arrays.sort(modelIndexes);
-     
-            for(int i = modelIndexes.length - 1; i >= 0; i--){
-                modeleC.removeCompetition(modelIndexes[i]);
-            }
+        public void actionPerformed(ActionEvent e) {     
+        	JPanel PanelAlert = new JPanel();
+        	
+        	int result = JOptionPane.showConfirmDialog(PanelAlert, "Êtes-vous sur de votre choix ?", "Message de confirmation", JOptionPane.YES_NO_OPTION);
+        	if (result == JOptionPane.YES_OPTION) 
+	        	{	
+	            int[] selection = tableauC.getSelectedRows();
+	            int[] modelIndexes = new int[selection.length];
+	     
+	            for(int i = 0; i < selection.length; i++){
+	                modelIndexes[i] = tableauC.getRowSorter().convertRowIndexToModel(selection[i]);
+	            }	     
+	            Arrays.sort(modelIndexes);   
+	            for(int i = modelIndexes.length - 1; i >= 0; i--){
+	                modeleC.removeCompetition(modelIndexes[i]);
+	            }
+        	}
         }
     }
     
@@ -197,18 +260,25 @@ public class Fenetre2 extends JFrame  {
         }
  
         public void actionPerformed(ActionEvent e) {
-            int[] selection = tableauE.getSelectedRows();
-            int[] modelIndexes = new int[selection.length];
-     
-            for(int i = 0; i < selection.length; i++){
-                modelIndexes[i] = tableauE.getRowSorter().convertRowIndexToModel(selection[i]);
-            }
-     
-            Arrays.sort(modelIndexes);
-     
-            for(int i = modelIndexes.length - 1; i >= 0; i--){
-                modeleE.removeEquipe(modelIndexes[i]);
-            }
+        	
+        	JPanel PanelAlert = new JPanel();      	
+        	int result = JOptionPane.showConfirmDialog(PanelAlert, "Êtes-vous sur de votre choix ?", "Message de confirmation", JOptionPane.YES_NO_OPTION);
+        	
+        	if (result == JOptionPane.YES_OPTION) 
+        	{
+	            int[] selection = tableauE.getSelectedRows();
+	            int[] modelIndexes = new int[selection.length];
+	     
+	            for(int i = 0; i < selection.length; i++){
+	                modelIndexes[i] = tableauE.getRowSorter().convertRowIndexToModel(selection[i]);
+	            }
+	     
+	            Arrays.sort(modelIndexes);
+	     
+	            for(int i = modelIndexes.length - 1; i >= 0; i--){
+	                modeleE.removeEquipe(modelIndexes[i]);
+	            }
+        	}
         }
     }
     
@@ -217,16 +287,22 @@ public class Fenetre2 extends JFrame  {
             super("Supprimer");
         }
         public void actionPerformed(ActionEvent e) {
-            int[] selection = tableauP.getSelectedRows();
-            int[] modelIndexes = new int[selection.length];
-     
-            for(int i = 0; i < selection.length; i++){
-                modelIndexes[i] = tableauP.getRowSorter().convertRowIndexToModel(selection[i]);
-            }   
-            Arrays.sort(modelIndexes);   
-            for(int i = modelIndexes.length - 1; i >= 0; i--){
-                modeleP.removePersonne(modelIndexes[i]);
-            }
+        	JPanel PanelAlert = new JPanel();      	
+        	int result = JOptionPane.showConfirmDialog(PanelAlert, "Êtes-vous sur de votre choix ?", "Message de confirmation", JOptionPane.YES_NO_OPTION);
+        	
+        	if (result == JOptionPane.YES_OPTION) 
+        	{
+	            int[] selection = tableauP.getSelectedRows();
+	            int[] modelIndexes = new int[selection.length];
+	     
+	            for(int i = 0; i < selection.length; i++){
+	                modelIndexes[i] = tableauP.getRowSorter().convertRowIndexToModel(selection[i]);
+	            }   
+	            Arrays.sort(modelIndexes);   
+	            for(int i = modelIndexes.length - 1; i >= 0; i--){
+	                modeleP.removePersonne(modelIndexes[i]);
+	            }
+        	}
         }
     }
     
@@ -304,6 +380,10 @@ public class Fenetre2 extends JFrame  {
 		
 	}
 	
+	public enum Pers {
+		
+	}
+	
 	public static class EqCellEditorAdd extends DefaultCellEditor {
 	    public EqCellEditorAdd() {
 	        super(PopulateEqAdd());
@@ -315,7 +395,7 @@ public class Fenetre2 extends JFrame  {
 	    	eqs = (ArrayList) Passerelle.getData("Equipe");
 			for (Equipe eq : eqs)
 			{
-					combo.addItem(eq);
+				combo.addItem(eq);
 			}
 	        return combo;
 	    }
@@ -331,10 +411,43 @@ public class Fenetre2 extends JFrame  {
 	    	eqs = (ArrayList) Passerelle.getData("Equipe");
 			for (Equipe eq : eqs)
 			{				
-					combo.addItem(eq);
+				combo.addItem(eq);
 			}
 	        return combo;
 	    }
 	}
 	
+	public static class PersCellEditorAdd extends DefaultCellEditor {
+	    public PersCellEditorAdd() {
+	        super(PopulatePersAdd());
+	    }
+	    
+	    private static JComboBox PopulatePersAdd() {
+	    	
+	    	JComboBox<Personne> combo = new JComboBox<Personne>();
+	    	pers = (ArrayList) Passerelle.getData("Personne");
+			for (Personne p : pers)
+			{
+				combo.addItem(p);
+			}
+	        return combo;
+	    }
+	}
+	
+	public static class PersoCellEditorSupp extends DefaultCellEditor {
+	    public PersoCellEditorSupp() {
+	        super(PopulatePersSupp());
+	    }
+	    
+	    private static JComboBox PopulatePersSupp() {	
+	    	JComboBox<Personne> combo = new JComboBox<Personne>();
+	    	pers = (ArrayList) Passerelle.getData("Personne");
+			for (Personne p : pers)
+			{				
+				combo.addItem(p);
+			}
+	        return combo;
+	    }
+	}
+
 }

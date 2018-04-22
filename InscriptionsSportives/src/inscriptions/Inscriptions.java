@@ -46,7 +46,6 @@ public class Inscriptions implements Serializable
 
 	private SortedSet<Competition> competitions = new TreeSet<>();
 	
-
 	private SortedSet<Candidat> candidats = new TreeSet<>();
 
 	private Inscriptions()
@@ -164,14 +163,16 @@ public class Inscriptions implements Serializable
 	
 	public void remove(Competition competition)
 	{
-			Passerelle.delete(competition);
+//		Passerelle.delete(competition);
+		competition.delete();
 
 	}
 	
 	public void remove(Candidat candidat)
 	{
 //		Passerelle.delete(this);
-		Passerelle.delete(candidat);
+		candidat.delete();
+//		Passerelle.delete(candidat);
 	}
 	
 	/**

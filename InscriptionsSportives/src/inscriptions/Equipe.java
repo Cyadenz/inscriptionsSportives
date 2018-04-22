@@ -63,9 +63,11 @@ public class Equipe extends Candidat
 	
 	public boolean remove(Personne membre)
 	{
-		membre.remove(this);
 		membres.remove(membre);
-		Passerelle.delete(membre);
+		Passerelle.save(this);
+//		membre.remove(this);
+//		membres.remove(membre);
+//		Passerelle.delete(membre);
 		return membres.remove(membre);
 	}
 

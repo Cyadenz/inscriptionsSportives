@@ -80,7 +80,8 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
             case 0:
                 return competitions.get(rowIndex).getNom();
             case 1:
-                return competitions.get(rowIndex).getDateCloture();
+            	SimpleDateFormat formater = new SimpleDateFormat("' Le' dd MMMM yyyy 'à' hh:mm:ss");      	
+                return formater.format(competitions.get(rowIndex).getDateCloture());
             case 2:
                 return competitions.get(rowIndex).estEnEquipe();
             case 3:
@@ -122,7 +123,7 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
                 		} 
                 		catch(ParseException e)
                     	{
-                    		JOptionPane.showMessageDialog(frame, "Veuillez saisir une date valide de format dd-MM-yyyy, ex : 20-11-2019.", "Erreur de saisie d'une date.", JOptionPane.ERROR_MESSAGE);
+                    		JOptionPane.showMessageDialog(frame, "Veuillez saisir une date valide de format dd-MM-yyyy ou dd-MM-yyyy-hh-mm, ex : 20-11-2019 ou 20-11-2019-12-30.", "Erreur de saisie d'une date.", JOptionPane.ERROR_MESSAGE);
                     	}
                 break;
                 case 2:

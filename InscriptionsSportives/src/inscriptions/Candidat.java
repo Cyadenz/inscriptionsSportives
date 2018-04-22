@@ -94,8 +94,9 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	
 	public void delete()
 	{
-		for (Competition c : competitions)
-			c.remove(this);
+//		for (Competition c : competitions)
+//			c.remove(this);
+		competitions.clear();
 		//inscriptions.remove(this);
 		Passerelle.delete(this);
 	}

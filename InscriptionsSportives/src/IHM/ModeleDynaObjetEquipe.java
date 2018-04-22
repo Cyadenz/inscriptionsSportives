@@ -2,16 +2,23 @@ package IHM;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 import IHM.Fenetre2.Eq;
+import IHM.Fenetre2.Pers;
+
 import java.util.List;
 import hibernate.Passerelle;
 import inscriptions.Equipe;
 import inscriptions.Inscriptions;
+import inscriptions.Personne;
 
 public class ModeleDynaObjetEquipe extends AbstractTableModel {
 	private final List<Equipe> equipes = new ArrayList<Equipe>();
     private final String[] entetes = {"Nom d'équipe", "Membres", "Inscrit à", "Ajouter un membre", "Supprimer un membre"};
+    public JFrame frame = new JFrame();
     
     private Inscriptions inscriptions;
     public ModeleDynaObjetEquipe(Inscriptions inscriptions) throws ParseException { 
@@ -85,23 +92,14 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
                 case 0:
                     equipe.setNom((String)aValue);
                     break;
-//                case 1:
-//                	String str_date = (String)aValue;
-//                	DateFormat formatter;
-//                	Date date;
-//                	formatter = new SimpleDateFormat("dd-MM-yyyy");
-//                	try {
-//                			date = formatter.parse(str_date);
-//                			equipe.setDateCloture(date);
-//                		} 
-//                	catch (ParseException e) {
-//                		System.out.println("Veuillez saisir une date valable de format dd-MM-yyyy. Code de l'erreur :"+e);
-//                	}
-//                break;
-//                case 2:
-//                	String enEquipe = "" + aValue; 
-//                    equipe.setEnEquipe(Boolean.valueOf(enEquipe));
-//                    break;
+                case 3:
+                	equipe.add((Personne)aValue);
+	                System.out.println("Ajout de l'"+aValue);
+                break;
+                case 4:
+                	System.out.println("Suppresion de l'"+aValue);
+                	equipe.remove((Personne)aValue);
+                break;
             }
         }
     }    
@@ -134,9 +132,9 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
 //            case 4:
 //                return Boolean.class;
             case 3:
-                return Eq.class;
+                return Pers.class;
             case 4:
-                return Eq.class;
+                return Pers.class;
             default:
                 return Object.class;
         }
