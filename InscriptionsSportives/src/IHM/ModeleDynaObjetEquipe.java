@@ -2,13 +2,9 @@ package IHM;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
-import IHM.Fenetre2.Eq;
-import IHM.Fenetre2.Pers;
-
+import IHM.FenêtrePrincipal.Pers;
 import java.util.List;
 import hibernate.Passerelle;
 import inscriptions.Equipe;
@@ -16,6 +12,11 @@ import inscriptions.Inscriptions;
 import inscriptions.Personne;
 
 public class ModeleDynaObjetEquipe extends AbstractTableModel {
+	/**
+	 * Modèle dynamique de l'objet Equipe
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final List<Equipe> equipes = new ArrayList<Equipe>();
     private final String[] entetes = {"Nom d'équipe", "Membres", "Inscrit à", "Ajouter un membre", "Supprimer un membre"};
     public JFrame frame = new JFrame();
@@ -23,36 +24,12 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
     private Inscriptions inscriptions;
     public ModeleDynaObjetEquipe(Inscriptions inscriptions) throws ParseException { 
     	super();
-    	this.inscriptions = inscriptions;
-    	
-//        String date_s = " 2011-01-18 00:00:00.0"; 
-//        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss"); 
-//        Date date = dt.parse(date_s);
-    	
-//		inscriptions.createEquipe("test1", date , false);
-//		inscriptions.createEquipe("test2", date , true);
-//		inscriptions.createEquipe("test3", date , true);
-			
-		
-//        this.inscriptions = inscriptions;           
+    	this.inscriptions = inscriptions;       
         ArrayList<Equipe> eqs = new ArrayList<Equipe>();
 		eqs = (ArrayList) Passerelle.getData("Equipe");
 		
 		equipes.addAll(eqs);
 		System.out.println(equipes.toString());
-//        for (int i = 0 ; i != compets.size(); i++)			
-//		{      	
-//        	inscriptions.createEquipe(compets.get(i).getNom(), compets.get(i).getDateCloture(), compets.get(i).estEnEquipe());
-//		}
-//        String date_s = " 2011-01-18 00:00:00.0"; 
-//        SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss"); 
-//        Date date = dt.parse(date_s);
-        
-//        inscriptions.createEquipe("tes1", date, true);
-//        inscriptions.createEquipe("test2", date, false);
-                
-
-
     }
  
     public int getRowCount() {
@@ -125,7 +102,7 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
     }
     
     @Override
-    public Class getColumnClass(int columnIndex){
+    public Class<?> getColumnClass(int columnIndex){
         switch(columnIndex){
 //            case 2:
 //                return Boolean.class;

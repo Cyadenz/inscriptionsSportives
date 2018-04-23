@@ -17,6 +17,7 @@ import hibernate.Passerelle;
  * Représente une personne physique pouvant s'inscrire à une compétition.
  */
 @Entity
+@Table(name = "Personne")
 public class Personne extends Candidat
 {
 	private String prenom;
@@ -25,7 +26,7 @@ public class Personne extends Candidat
 
 	private static final long serialVersionUID = 4434646724271327254L;
 	
-	@ManyToMany(mappedBy = "membres")
+	@ManyToMany(targetEntity=Equipe.class, mappedBy = "membres", fetch=FetchType.EAGER)
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Equipe> equipes;

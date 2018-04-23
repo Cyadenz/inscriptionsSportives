@@ -18,6 +18,7 @@ import hibernate.Passerelle;
  * 
  */
 @Entity
+@Table(name = "Equipe")
 public class Equipe extends Candidat
 {	
 	private static final long serialVersionUID = 4147819927233466035L;

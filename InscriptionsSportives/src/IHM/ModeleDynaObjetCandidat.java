@@ -3,13 +3,17 @@ package IHM;
 import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import IHM.Fenetre2.Eq;
 import java.util.List;
 import hibernate.Passerelle;
 import inscriptions.Personne;
 import inscriptions.Inscriptions;
 
 public class ModeleDynaObjetCandidat extends AbstractTableModel {
+	/**
+	 * Modèle dynamique de l'object Candidat
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final List<Personne> personnes = new ArrayList<Personne>();
     private final String[] entetes = {"Nom", "Prénom", "Mail", "Equipe", "Compétition"};
     
@@ -92,7 +96,7 @@ public class ModeleDynaObjetCandidat extends AbstractTableModel {
     }
     
     @Override
-    public Class getColumnClass(int columnIndex){
+    public Class<Object> getColumnClass(int columnIndex){
         switch(columnIndex){
             default:
                 return Object.class;

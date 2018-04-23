@@ -21,6 +21,7 @@ import hibernate.Passerelle;
  *
  */
 @Entity
+@Table(name = "Competition")
 public class Competition implements Comparable<Competition>, Serializable
 {
 	@Id
@@ -44,7 +45,12 @@ public class Competition implements Comparable<Competition>, Serializable
 	
 	@Column(columnDefinition="tinyint(1) default 0")
 	private boolean enEquipe = false;
-
+	
+	@SuppressWarnings("unused")
+	private Competition()
+	{
+		
+	}
 	Competition(Inscriptions inscriptions, String nom, Date dateCloture, boolean enEquipe)
 	{
 		this.enEquipe = enEquipe;
@@ -195,9 +201,11 @@ public class Competition implements Comparable<Competition>, Serializable
 	{
 //		candidat.remove(this);
 //		Passerelle.delete(candidat);
+		
 		candidats.remove(candidat);
 //		candidats.remove(candidat);
 //		candidat.remove(this);
+		
 		Passerelle.save(this);
 		return candidats.remove(candidat);
 	}

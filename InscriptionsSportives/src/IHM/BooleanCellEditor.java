@@ -10,7 +10,11 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 public class BooleanCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
-    private boolean EnEquipe;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private boolean EnEquipe;
     private JButton bouton;
  
     public BooleanCellEditor() {

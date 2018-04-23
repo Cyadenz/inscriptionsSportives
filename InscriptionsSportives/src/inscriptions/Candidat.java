@@ -19,7 +19,7 @@ import hibernate.Passerelle;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-
+@Table(name = "Candidat")
 public abstract class Candidat implements Comparable<Candidat>, Serializable
 {
 	@Id
@@ -33,10 +33,16 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	
 	private String nom;
 	
-	@ManyToMany(mappedBy = "candidats")
+	@ManyToMany(targetEntity=Competition.class, mappedBy = "candidats", fetch=FetchType.EAGER)
 	@Cascade(value = { CascadeType.ALL })
 	@SortNatural
 	private Set<Competition> competitions;
+	
+	@SuppressWarnings("unused")
+	private Candidat()
+	{
+		
+	}
 	
 	Candidat(Inscriptions inscriptions, String nom)
 	{

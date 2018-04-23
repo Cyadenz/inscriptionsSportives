@@ -3,10 +3,9 @@ package inscriptions;
 import java.io.IOException;
 import java.text.ParseException;
 
-import IHM.Fenetre2;
+import IHM.FenêtrePrincipal;
 import dialogueUtilisateur.MenuUtil;
 import hibernate.Passerelle;
-import interfaceGraph.Fenetre;
 
 public class StartAppli {
 
@@ -16,8 +15,7 @@ public class StartAppli {
 //		Inscriptions inscriptions = Inscriptions.reinitialiser();
 //		MenuUtil personnelConsole = new MenuUtil(inscriptions);
 //			personnelConsole.start();
-//		new Fenetre(inscriptions);
-		new Fenetre2();		
+		new FenêtrePrincipal();		
 //		back.close();
 //		try
 //		{
