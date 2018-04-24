@@ -90,7 +90,8 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	public boolean remove(Competition competition)
 	{
 		competitions.remove(competition);
-		Passerelle.delete(competition);
+//		Passerelle.delete(competition);
+		Passerelle.save(this);
 		return competitions.remove(competition);
 	}
 

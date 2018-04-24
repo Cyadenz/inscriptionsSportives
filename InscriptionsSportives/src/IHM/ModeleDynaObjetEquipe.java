@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.table.AbstractTableModel;
-import IHM.FenêtrePrincipal.Pers;
 import java.util.List;
 import hibernate.Passerelle;
 import inscriptions.Equipe;
@@ -18,18 +17,16 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	
 	private final List<Equipe> equipes = new ArrayList<Equipe>();
-    private final String[] entetes = {"Nom d'équipe", "Membres", "Inscrit à", "Ajouter un membre", "Supprimer un membre"};
+    private final String[] entetes = {"Nom d'équipe", "Membres", "Inscrit à"};
     public JFrame frame = new JFrame();
     
     private Inscriptions inscriptions;
     public ModeleDynaObjetEquipe(Inscriptions inscriptions) throws ParseException { 
     	super();
-    	this.inscriptions = inscriptions;       
-        ArrayList<Equipe> eqs = new ArrayList<Equipe>();
-		eqs = (ArrayList) Passerelle.getData("Equipe");
+    	this.inscriptions = inscriptions;       	
+		equipes.addAll(getEquipeFromDB());
 		
-		equipes.addAll(eqs);
-		System.out.println(equipes.toString());
+		System.out.println("On passe par le constructeur d'équipe");
     }
  
     public int getRowCount() {
@@ -44,6 +41,10 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
         return entetes[columnIndex];
     }
  
+    public Equipe getEq(int rowIndex) {
+        return equipes.get(rowIndex);
+    }
+    
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch(columnIndex){
             case 0:
@@ -52,10 +53,6 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
                 return equipes.get(rowIndex).getMembres();
             case 2:
                 return equipes.get(rowIndex).getCompetitions();
-            case 3:
-            	return "Default";
-            case 4:
-            	return "Default"; 
             default:
                 return null; //Ne devrait jamais arriver
         }
@@ -69,14 +66,6 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
                 case 0:
                     equipe.setNom((String)aValue);
                     break;
-                case 3:
-                	equipe.add((Personne)aValue);
-	                System.out.println("Ajout de l'"+aValue);
-                break;
-                case 4:
-                	System.out.println("Suppresion de l'"+aValue);
-                	equipe.remove((Personne)aValue);
-                break;
             }
         }
     }    
@@ -93,8 +82,15 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
         fireTableRowsInserted(equipes.size() -1, equipes.size() -1);
     }
  
+    public void addPersonne(int rowIndex, Personne membre) {   	
+    	equipes.get(rowIndex).add(membre);
+    }
+
+    public void RemovePersonne(int rowIndex, Personne membre) {   	
+    	equipes.get(rowIndex).remove(membre);
+    }
+    
     public void removeEquipe(int rowIndex) {
-    	System.out.println(equipes.get(rowIndex));
     	inscriptions.remove(equipes.get(rowIndex));
     	
     	equipes.remove(rowIndex);
@@ -104,14 +100,6 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex){
         switch(columnIndex){
-//            case 2:
-//                return Boolean.class;
-//            case 4:
-//                return Boolean.class;
-            case 3:
-                return Pers.class;
-            case 4:
-                return Pers.class;
             default:
                 return Object.class;
         }
@@ -119,8 +107,14 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
     
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-//    	if(columnIndex == 3 ||columnIndex == 4)
-//    		return false;
-        return true; //Editable
-    }       
+    	if(columnIndex == 1|| columnIndex == 2)
+    		return false;
+        return true;
+    }    
+    public ArrayList<Equipe> getEquipeFromDB()
+    {
+        ArrayList<Equipe> équipes = new ArrayList<Equipe>();
+        équipes = (ArrayList) Passerelle.getData("Equipe");	
+		return équipes;
+    }
 }

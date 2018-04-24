@@ -1,11 +1,9 @@
-package inscriptions;
+package IHM;
 
-import java.io.IOException;
 import java.text.ParseException;
 
-import IHM.FenêtrePrincipal;
-import dialogueUtilisateur.MenuUtil;
 import hibernate.Passerelle;
+import mail.mail;
 
 public class StartAppli {
 
@@ -25,6 +23,7 @@ public class StartAppli {
 //		{
 //			System.out.println("Sauvegarde impossible." + e);
 //		}
+//		mail.sendMail("ugo.perniceni@hotmail.fr", "slt", "zefiofzeiofjazeofeklfzefazefe");
 
 	}
 

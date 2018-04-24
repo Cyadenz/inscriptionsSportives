@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/jboss-logging-annotations-1.2.0.Beta1.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-transaction-api_1.2_spec-1.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.25-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ugo/.eclipse/org.eclipse.recommenders.models.rcp/repository/http___download_eclipse_org_recommenders_models_neon_/org/eclipse/javax.mail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

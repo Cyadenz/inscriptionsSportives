@@ -98,9 +98,9 @@ public class Personne extends Candidat
 	}
 
 	boolean remove(Equipe equipe)
-	{
+	{	
 		equipes.remove(equipe);
-		Passerelle.delete(equipe);
+		Passerelle.save(this);
 		return equipes.remove(equipe);
 	}
 	

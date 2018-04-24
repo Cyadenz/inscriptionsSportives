@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
-import IHM.FenêtrePrincipal.Eq;
 import java.util.Date;
 import java.util.List;
 import hibernate.Passerelle;
+import inscriptions.Candidat;
 import inscriptions.Competition;
 import inscriptions.Equipe;
 import inscriptions.Inscriptions;
+import inscriptions.Personne;
 
 public class ModeleDynaObjetCompetition extends AbstractTableModel {
 	/**
@@ -22,7 +23,7 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	
 	private final List<Competition> competitions = new ArrayList<Competition>();
-    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?", "Ajouter une equipe", "Supprimer une équipe"};
+    private final String[] entetes = {"Nom", "Date cloture", "Réservé aux équipes ?", "Candidats", "Ouverte ?"};
     
     public JFrame frame = new JFrame();
     
@@ -50,6 +51,10 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
         return entetes[columnIndex];
     }
  
+    public Competition getCompet(int rowIndex) {
+        return competitions.get(rowIndex);
+    }
+    
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch(columnIndex){
             case 0:
@@ -98,23 +103,7 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
                     }
                 	else
                 		JOptionPane.showMessageDialog(frame, "Vous ne pouvez pas changer le type de la compétition lorsque celle-ci contient déjà des équipes/personnes ! Veuillez d'abord supprimer les équipes/personnes ou la compétition.", "Erreur de changement de type de compétition.", JOptionPane.ERROR_MESSAGE);
-                break;
-                case 5:
-                	try
-                	{
-	                	competition.add((Equipe)aValue);
-	                	System.out.println("Ajout de l'"+aValue);
-                	}
-                    catch(java.lang.RuntimeException e3)
-                	{
-                		JOptionPane.showMessageDialog(frame, "Vous ne pouvez pas ajouter d'équipes ou de personnes lorsque la date d'inscription de la compétition est close \nou que la compétition est réservée à un autre type de candidat !", "Erreur lors de l'ajout d'une équipe/personne.", JOptionPane.ERROR_MESSAGE);
-                	}
-                break;
-                case 6:
-                	System.out.println("Suppresion de l'"+aValue);
-                	competition.remove((Equipe)aValue);
-                break;
-//                	
+                break;              	
             }
         }
     }    
@@ -127,6 +116,24 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
 	    	competitions.add(compets.get(compets.size()-1)); 
 	        fireTableRowsInserted(competitions.size() -1, competitions.size() -1);
     }
+    
+    public void addCandidat(int rowIndex, Candidat candidat)
+    {
+		if(getCompet(rowIndex).estEnEquipe())
+		{
+			if (candidat instanceof Equipe)
+				getCompet(rowIndex).add((Equipe)candidat);
+		}
+		else if(!getCompet(rowIndex).estEnEquipe())
+		{
+    		if (candidat instanceof Personne)
+    			getCompet(rowIndex).add((Personne)candidat);
+		}
+		else
+		{
+			System.out.println("N'arrive jamais?");
+		}
+    }
  
     public void removeCompetition(int rowIndex) {
     	System.out.println(competitions.get(rowIndex));
@@ -134,6 +141,11 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
     	
     	competitions.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+         
+    public void RemoveCandidat(int rowIndex, Candidat candidat) {   	
+    	competitions.get(rowIndex).remove(candidat);
+    	System.out.println("Candidat remove avec succès");
     }
     
     @Override
@@ -143,10 +155,6 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
                 return Boolean.class;
             case 4:
                 return Boolean.class;
-            case 5:
-                return Eq.class;
-            case 6:
-                return Eq.class;
             default:
                 return Object.class;
         }

@@ -40,6 +40,10 @@ public class ModeleDynaObjetCandidat extends AbstractTableModel {
         return entetes[columnIndex];
     }
  
+    public Personne getPers(int rowIndex) {
+        return personnes.get(rowIndex);
+    }
+    
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch(columnIndex){
             case 0:
