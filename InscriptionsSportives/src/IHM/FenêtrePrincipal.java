@@ -3,10 +3,12 @@ package IHM;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +31,7 @@ public class FenêtrePrincipal extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public JFrame frame = new JFrame();
+	public static JFrame frame = new JFrame();
 	private JTable tableauC;
 	private JTable tableauE;
 	private JTable tableauP;
@@ -98,7 +100,7 @@ public class FenêtrePrincipal extends JFrame {
 		buttons.add(new JButton(new ButtonCompet("Compétitions")), gbc);
 		buttons.add(new JButton(new ButtonEquipe("Equipes")), gbc);
 		buttons.add(new JButton(new ButtonPersonne("Candidats")), gbc);
-		buttons.add(new JButton("Contact"), gbc);
+		buttons.add(new JButton(new ButtonContact("Contact")), gbc);
 
 		JPanel quitter = new JPanel();
 		quitter.setBorder(new EmptyBorder(8, 0, 0, 0));
@@ -115,14 +117,6 @@ public class FenêtrePrincipal extends JFrame {
 	}
 
 	private void AddTabCompet() {
-		Date date = new Date();
-		modeleC.addCompetition("compet1", date, true);
-		modeleC.addCompetition("compet2", date, true);
-		modeleE.addEquipe("Eq1");
-		modeleE.addEquipe("Eq2");
-		modeleP.addPersonne("P1", "P1", "P1");
-		modeleP.addPersonne("P2", "P2", "P2");
-
 		tableauC = new JTable(modeleC);
 		// JTable tableauC = new JTable(new ModeleStatiqueObjet(inscriptions));
 		tableauC.setDefaultEditor(Boolean.class, new BooleanCellEditor());
@@ -199,12 +193,26 @@ public class FenêtrePrincipal extends JFrame {
 
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableauP.getModel());
 		tableauP.setRowSorter(sorter);
-		getContentPane().add(new JScrollPane(tableauP), BorderLayout.CENTER);
-
+		getContentPane().add(new JScrollPane(tableauP), BorderLayout.CENTER);				
+		
 		JPanel boutons = new JPanel();
-		boutons.add(new JButton(new AddActionP()));
-		boutons.add(new JButton(new RemoveActionP()));
-		boutons.add(new JButton(new Retour("retour")));
+		boutons.setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		JPanel p1 = new JPanel();
+		p1.setLayout(new GridLayout(1, 2));
+		JPanel p3 = new JPanel();
+
+		p1.add(new JButton(new AddActionP()), gbc);
+		p1.add(new JButton(new RemoveActionP()), gbc);
+		p3.add(new JButton(new Retour("Retour")), gbc);
+
+		boutons.add(p1, gbc);
+		boutons.add(p3, gbc);
+
 		getContentPane().add(boutons, BorderLayout.SOUTH);
 	}
 
@@ -238,7 +246,7 @@ public class FenêtrePrincipal extends JFrame {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 
 			JPanel TextField = new JPanel(new GridBagLayout());
-			;
+			
 			JTextField NomField = new JTextField(30);
 			JTextField DateField = new JTextField(30);
 
@@ -834,7 +842,27 @@ public class FenêtrePrincipal extends JFrame {
 			validate();
 		}
 	}
+	
+	private class ButtonContact extends AbstractAction {
+		/**
+		 * AbstractAction répondant au bouton Personne, permettant de lancer la
+		 * JTable Personne
+		 */
+		private static final long serialVersionUID = 1L;
 
+		private ButtonContact(String Nom) {
+			super(Nom);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			getContentPane().removeAll();
+			Contact();
+			getContentPane().repaint();
+			validate();
+		}
+	}
+	
 	private class Retour extends AbstractAction {
 		/**
 		 * AbstractAction répondant au bouton Retour, retourner au menu
@@ -868,15 +896,100 @@ public class FenêtrePrincipal extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			try
+			{
+				inscriptions.sauvegarder();
+			} 
+			catch (IOException e5)
+			{
+				System.out.println("Sauvegarde impossible." + e5);
+			}
+			
 			dispose();
 			System.exit(0);
 		}
 	}
+	
+	private void Contact() {
+		pers = (ArrayList) Passerelle.getData("Personne");
+		String [] mail = new String[pers.size()];
+		int i = 0;
+		
+		for (Personne p : pers)
+		{
+			mail[i] = pers.get(i).getMail();
+			i++;
+		}
+		
+		JPanel Panel = new JPanel();
+		Panel.setLayout(null);
+		Color color = new Color(245, 245, 245);
+		Panel.setBackground(color);
+		
+		JLabel Titre = new JLabel("Envoyer un Email");
+		Titre.setFont(new Font("Serif", Font.BOLD, 20));		
+		JLabel EmailLab = new JLabel("Email :");
+		JLabel ObjLab = new JLabel("Objet :");
+		JLabel MsgLab = new JLabel("Message :");
+		
+		JScrollPane scrollPane = new JScrollPane();	
+		JList<String> list = new JList<String>(mail);
+		scrollPane.setViewportView(list);	
+		
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		list.setLayoutOrientation(JList.VERTICAL_WRAP);
+		
+		JTextField FieldObj = new JTextField();
+		
+		JScrollPane scrollPane2 = new JScrollPane();	
+		JTextPane FieldTxt = new JTextPane();
+		scrollPane2.setViewportView(FieldTxt);	
+		
+		Titre.setBounds(525, 120, 400, 30);
+		EmailLab.setBounds(320, 173, 200, 30);
+		ObjLab.setBounds(320, 253, 200, 30);
+		MsgLab.setBounds(320, 293, 200, 30);	
+		scrollPane.setBounds(420, 180, 450, 70);
+		FieldObj.setBounds(420, 260, 450, 30);
+		scrollPane2.setBounds(420, 300, 450, 180);
+		
+		Panel.add(Titre);
+		Panel.add(EmailLab);
+		Panel.add(ObjLab);
+		Panel.add(MsgLab);
+		Panel.add(scrollPane);
+		Panel.add(FieldObj);
+		Panel.add(scrollPane2);
+		// PARAM VAL SELECT only
+		
+		JButton btn1 = new JButton("Envoyer");
+		btn1.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	if(!FieldTxt.getText().isEmpty() && !FieldObj.getText().isEmpty() && !list.getSelectedValuesList().isEmpty())
+		    	{
+		    		Object[] mails =  list.getSelectedValuesList().toArray();    	
+			    	for(int i=0; i!= mails.length; i++)
+			    		Mail.sendMail(mails[i].toString(), FieldObj.getText(), FieldTxt.getText());
+//			    	System.out.println("mail: "+(mails[i].toString())+" object : "+FieldObj.getText()+" Content : "+FieldTxt.getText());
+			    	FieldObj.setText("");
+			    	FieldTxt.setText("");
+			    	list.clearSelection();
+			    	JOptionPane.showMessageDialog(frame, mails.length+" Email(s) envoyée(s) !");
+				}
+		    }
+		});
+		
+		//JButton btn1 = new JButton(new ButtonEnvoyer(list.getSelectedValuesList().toArray(), FieldObj.getText(), FieldTxt.getText()));
+		
+		JButton btn2 = new JButton(new Retour("Retour"));
+		
+		btn1.setBounds(500, 500, 100, 30);
+		btn2.setBounds(620, 500, 100, 30);
+		
+		Panel.add(btn1);
+		Panel.add(btn2);
 
-	// private class DateComparator implements Comparator<Date> {
-	// @Override
-	// public int compare(Date c1, Date c2) {
-	// return new Integer((c1).compareTo(c2));
-	// }
-	// }
+		getContentPane().add(Panel);
+	}
 }

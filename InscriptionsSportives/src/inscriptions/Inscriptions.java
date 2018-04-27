@@ -149,7 +149,7 @@ public class Inscriptions implements Serializable
 	 * de constructeur public dans {@link Equipe}.
 	 * @param nom
 	 * @param prenom
-	 * @param mail
+	 * @param Mail
 	 * @return
 	 */
 	

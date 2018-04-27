@@ -3,7 +3,6 @@ package IHM;
 import java.text.ParseException;
 
 import hibernate.Passerelle;
-import mail.mail;
 
 public class StartAppli {
 
