@@ -217,8 +217,8 @@ public class Competition implements Comparable<Competition>, Serializable
 	
 	public void delete()
 	{
-//		for (Candidat candidat : candidats)
-//			remove(candidat);
+		for (Candidat candidat : candidats)
+			candidat.remove(this);
 //		Passerelle.delete(this);
 
 	 candidats.clear();
