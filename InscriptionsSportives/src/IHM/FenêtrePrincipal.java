@@ -42,7 +42,7 @@ public class FenêtrePrincipal extends JFrame {
 	private ModeleDynaObjetEquipe modeleE = new ModeleDynaObjetEquipe(inscriptions);
 	private ModeleDynaObjetCandidat modeleP = new ModeleDynaObjetCandidat(inscriptions);
 
-//	public static List<Equipe> eqs = new ArrayList<Equipe>();
+	// public static List<Equipe> eqs = new ArrayList<Equipe>();
 	public static List<Personne> pers = new ArrayList<Personne>();
 
 	public FenêtrePrincipal() throws ParseException {
@@ -86,8 +86,8 @@ public class FenêtrePrincipal extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(new JFrame(),
 					"Problème avec le logo de la M2L\n Code de l'erreur :" + e
-							+ "\n Veuillez vérifier le chemin \\inscriptionsSportives\\InscriptionsSporftives\\src\\logoM2L.png \n La page d'accueil va se charger sans le logo."							
-					,"Problème d'image", JOptionPane.ERROR_MESSAGE);
+							+ "\n Veuillez vérifier le chemin \\inscriptionsSportives\\InscriptionsSporftives\\src\\logoM2L.png \n La page d'accueil va se charger sans le logo.",
+					"Problème d'image", JOptionPane.ERROR_MESSAGE);
 		}
 
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -470,7 +470,7 @@ public class FenêtrePrincipal extends JFrame {
 
 			pers.clear();
 			pers = (ArrayList) Passerelle.getData("Personne");
-			
+
 			for (Personne p : pers)
 				combo.addItem(p);
 
@@ -529,8 +529,7 @@ public class FenêtrePrincipal extends JFrame {
 				gbc.gridwidth = GridBagConstraints.REMAINDER;
 				gbc.anchor = GridBagConstraints.NORTH;
 
-				JLabel label = new JLabel(
-						"<html><h3><i>Sélectionner l'équipe/la personnne à inscrire dans la/les compétition(s).<br /></i></h3></html>");
+				JLabel label = new JLabel("<html><h3><i>Sélectionner l'équipe/la personnne à inscrire dans la/les compétition(s).<br /></i></h3></html>");
 				jop.add(label, gbc);
 
 				gbc.anchor = GridBagConstraints.CENTER;
@@ -558,8 +557,7 @@ public class FenêtrePrincipal extends JFrame {
 				gbc.weighty = 1;
 				jop.add(center, gbc);
 
-				int result = JOptionPane.showConfirmDialog(null, jop,
-						"Selectionner l'équipe/la personnne à inscrire dans la/les compétition(s)",
+				int result = JOptionPane.showConfirmDialog(null, jop, "Selectionner l'équipe/la personnne à inscrire dans la/les compétition(s)",
 						JOptionPane.OK_CANCEL_OPTION);
 
 				if (result == JOptionPane.OK_OPTION && combo.getItemCount() != 0) {
@@ -599,8 +597,7 @@ public class FenêtrePrincipal extends JFrame {
 				gbc.gridwidth = GridBagConstraints.REMAINDER;
 				gbc.anchor = GridBagConstraints.NORTH;
 
-				JLabel label = new JLabel(
-						"<html><h3><i>Sélectionner la personne à désinscrire de l'équipe/les équipes.<br /></i></h3></html>");
+				JLabel label = new JLabel("<html><h3><i>Sélectionner la personne à désinscrire de l'équipe/les équipes.<br /></i></h3></html>");
 				jop.add(label, gbc);
 
 				gbc.anchor = GridBagConstraints.CENTER;
@@ -688,6 +685,7 @@ public class FenêtrePrincipal extends JFrame {
 				Set<Candidat> hs = new LinkedHashSet<>();
 
 				JComboBox<Candidat> combo = new JComboBox<Candidat>();
+				
 				for (int i = modelIndexes.length - 1; i >= 0; i--) {
 					al.addAll(modeleC.getCompet(modelIndexes[i]).getCandidats());
 				}
