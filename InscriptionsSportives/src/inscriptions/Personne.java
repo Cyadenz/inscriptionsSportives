@@ -38,6 +38,14 @@ public class Personne extends Candidat
 		this.mail = mail;
 		equipes = new TreeSet<>();
 	}
+	
+	public Personne(String nom, String prenom, String mail)
+	{
+		super(nom);
+		this.prenom = prenom;
+		this.mail = mail;
+		equipes = new TreeSet<>();
+	}
 
 	/**
 	 * Retourne le prénom de la personne.
@@ -107,9 +115,13 @@ public class Personne extends Candidat
 	@Override
 	public void delete()
 	{
+		for (Equipe c : equipes)
+			c.remove(this);
 		super.delete();
-		for (Equipe e : equipes) 
-			Passerelle.delete(this);
+		
+//		equipes.clear();
+//		for (Equipe e : equipes) 
+//			Passerelle.delete(this);
 //			e.remove(this);
 	}
 	

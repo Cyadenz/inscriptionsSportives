@@ -37,7 +37,7 @@ public class ModeleDynaObjetCompetition extends AbstractTableModel {
 		compets = (ArrayList) Passerelle.getData("Competition");
 
 		competitions.addAll(compets);
-		System.out.println(competitions.toString());
+		System.out.println(competitions.toString());	
 	}
 
 	public int getRowCount() {

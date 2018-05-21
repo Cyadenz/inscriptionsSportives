@@ -50,6 +50,12 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 		this.nom = nom;
 		competitions = new TreeSet<>();
 	}
+	
+	public Candidat(String nom)
+	{
+		this.nom = nom;
+		competitions = new TreeSet<>();
+	}
 
 	/**
 	 * Retourne le nom du candidat.
@@ -101,8 +107,10 @@ public abstract class Candidat implements Comparable<Candidat>, Serializable
 	
 	public void delete()
 	{
-//		for (Competition c : competitions)
-//			c.remove(this);
+		for (Competition c : competitions)
+			c.remove(this);
+		Passerelle.save(this);
+		
 		competitions.clear();
 		//inscriptions.remove(this);
 		Passerelle.delete(this);

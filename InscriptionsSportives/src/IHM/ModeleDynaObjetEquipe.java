@@ -26,8 +26,6 @@ public class ModeleDynaObjetEquipe extends AbstractTableModel {
 		super();
 		this.inscriptions = inscriptions;
 		equipes.addAll(getEquipeFromDB());
-
-		System.out.println("On passe par le constructeur d'équipe");
 	}
 
 	public int getRowCount() {

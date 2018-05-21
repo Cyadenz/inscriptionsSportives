@@ -59,6 +59,14 @@ public class Competition implements Comparable<Competition>, Serializable
 		candidats = new TreeSet<>();
 	}
 	
+	public Competition(String nom, Date dateCloture, boolean enEquipe)
+	{
+		this.enEquipe = enEquipe;
+		this.nom = nom;
+		this.dateCloture = dateCloture;
+		candidats = new TreeSet<>();
+	}
+	
 	/**
 	 * Retourne le nom de la compÃ©tition.
 	 * @return

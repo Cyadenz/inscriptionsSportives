@@ -250,7 +250,7 @@ public class FenêtrePrincipal extends JFrame {
 			TextField.add(new JLabel("Nom de la compétition :"), gbc);
 			TextField.add(NomField, gbc);
 
-			TextField.add(new JLabel("Date de la compétition :"), gbc);
+			TextField.add(new JLabel("Date de la compétition (format dd-MM-yyyy HH:mm)"), gbc);
 			TextField.add(DateField, gbc);
 
 			TextField.add(new JLabel("Compétition réservé aux équipes ?"), gbc);

@@ -31,6 +31,13 @@ public class Equipe extends Candidat
 	Equipe(Inscriptions inscriptions, String nom)
 	{
 		super(inscriptions, nom);
+		membres = new TreeSet<>();
+	}
+	
+	public Equipe(String nom)
+	{
+		super(nom);
+		membres = new TreeSet<>();
 	}
 
 	/**
@@ -73,16 +80,15 @@ public class Equipe extends Candidat
 //		Passerelle.delete(membre);
 		return membres.remove(membre);
 	}
-
-
+	
+	@Override
 	public void delete()
-	{
+	{		
 		for (Personne personne : membres)
 			personne.remove(this);
-//		Passerelle.delete(this);
-
-	 membres.clear();
-	 Passerelle.delete(this);
+		Passerelle.save(this);
+		
+		super.delete();		
 	}
 	
 	@Override
